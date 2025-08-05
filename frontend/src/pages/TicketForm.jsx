@@ -1,22 +1,12 @@
 import { useState } from "react";
-import {
-    TextField,
-    Button,
-    MenuItem,
-    Select,
-    InputLabel,
-    FormControl,
-    Typography,
-    Card,
-    CardContent,
-    Box,
-    Grid
-} from "@mui/material";
+import {Button, Typography, Card, CardContent, Box, Grid} from "@mui/material";
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import ConfirmationNumberOutlinedIcon from '@mui/icons-material/ConfirmationNumberOutlined';
 import Title from "../component/Title.jsx";
 import Subtitle from "../component/Subtitle.jsx";
 import CircleWrapper from "../component/CircleWrapper.jsx";
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import ConfirmationNumberOutlinedIcon from '@mui/icons-material/ConfirmationNumberOutlined';
+import CustomTextField from "../component/CustomTextField.jsx";
+import CustomSelect from "../component/CustomSelect.jsx";
 
 const CATEGORIES = [
     "Hardware Issues",
@@ -99,129 +89,44 @@ export const UserTicketForm = () => {
                 <Typography variant='h6' gutterBottom sx={{fontSize: 15, fontWeight: 'light', color: 'rgba(0,0,0,0.7)', mb: 5}}>
                     Please provide detailed information about your issue to help us assist you better
                 </Typography>
-                {/*<form onSubmit={handleSubmit}>*/}
-                {/*    <Box display="flex" gap={2} flexWrap="wrap">*/}
-                {/*        <TextField*/}
-                {/*            label="Full Name *"*/}
-                {/*            fullWidth*/}
-                {/*            required*/}
-                {/*            value={formData.name}*/}
-                {/*            onChange={(e) => handleInputChange("name", e.target.value)}*/}
-                {/*        />*/}
-                {/*        <TextField*/}
-                {/*            label="Email Address *"*/}
-                {/*            type="email"*/}
-                {/*            fullWidth*/}
-                {/*            required*/}
-                {/*            value={formData.email}*/}
-                {/*            onChange={(e) => handleInputChange("email", e.target.value)}*/}
-                {/*        />*/}
-                {/*        <FormControl fullWidth required>*/}
-                {/*            <InputLabel>Issue Category</InputLabel>*/}
-                {/*            <Select*/}
-                {/*                value={formData.category}*/}
-                {/*                onChange={(e) => handleInputChange("category", e.target.value)}*/}
-                {/*                label="Issue Category"*/}
-                {/*            >*/}
-                {/*                {CATEGORIES.map((category) => (*/}
-                {/*                    <MenuItem key={category} value={category}>{category}</MenuItem>*/}
-                {/*                ))}*/}
-                {/*            </Select>*/}
-                {/*        </FormControl>*/}
-                {/*        <FormControl fullWidth required>*/}
-                {/*            <InputLabel>Priority Level</InputLabel>*/}
-                {/*            <Select*/}
-                {/*                value={formData.priority}*/}
-                {/*                onChange={(e) => handleInputChange("priority", e.target.value)}*/}
-                {/*                label="Priority Level"*/}
-                {/*            >*/}
-                {/*                {PRIORITIES.map((priority) => (*/}
-                {/*                    <MenuItem key={priority} value={priority}>{priority}</MenuItem>*/}
-                {/*                ))}*/}
-                {/*            </Select>*/}
-                {/*        </FormControl>*/}
-                {/*        <TextField*/}
-                {/*            label="Issue Description *"*/}
-                {/*            fullWidth*/}
-                {/*            multiline*/}
-                {/*            rows={5}*/}
-                {/*            required*/}
-                {/*            value={formData.description}*/}
-                {/*            onChange={(e) => handleInputChange("description", e.target.value)}*/}
-                {/*        />*/}
-                {/*    </Box>*/}
-                {/*    <Button*/}
-                {/*        type="submit"*/}
-                {/*        variant="contained"*/}
-                {/*        color="primary"*/}
-                {/*        fullWidth*/}
-                {/*        sx={{ mt: 3 }}*/}
-                {/*        disabled={!formData.name || !formData.email || !formData.category || !formData.priority || !formData.description}*/}
-                {/*    >*/}
-                {/*        Submit Ticket*/}
-                {/*    </Button>*/}
-                {/*</form>*/}
-                <Box component='form'>
+                <Box component='form' onSubmit={handleSubmit}>
                     <Grid container spacing={3}>
-                        <Grid size={{xs: 6}}>
-                            <TextField
+                        <Grid size={{xs: 12, sm: 6}}>
+                            <CustomTextField
                                 label="Full Name"
-                                fullWidth
-                                required
                                 value={formData.name}
                                 onChange={(e) => handleInputChange("name", e.target.value)}
-                                InputProps={{
-                                    style: {
-                                        borderRadius: "10px",
-                                    }
-                                }}
                             />
                         </Grid>
-                        <Grid size={{xs: 6}}>
-                            <TextField
+                        <Grid size={{xs: 12, sm: 6}}>
+                            <CustomTextField
                                 label="Email Address"
                                 type="email"
-                                fullWidth
-                                required
                                 value={formData.email}
                                 onChange={(e) => handleInputChange("email", e.target.value)}
                             />
                         </Grid>
-                        <Grid size={{xs: 6}}>
-                            <FormControl fullWidth required>
-                                <InputLabel>Issue Category</InputLabel>
-                                <Select
-                                    value={formData.category}
-                                    onChange={(e) => handleInputChange("category", e.target.value)}
-                                    label="Issue Category"
-                                    variant='outlined'>
-                                    {CATEGORIES.map((category) => (
-                                        <MenuItem key={category} value={category}>{category}</MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
+                        <Grid size={{xs: 12, sm: 6}}>
+                            <CustomSelect
+                                label="Issue Category"
+                                value={formData.category}
+                                onChange={(e) => handleInputChange("category", e.target.value)}
+                                option={CATEGORIES}
+                            />
                         </Grid>
-                        <Grid size={{xs: 6}}>
-                            <FormControl fullWidth required>
-                                <InputLabel>Priority Level</InputLabel>
-                                <Select
-                                    value={formData.priority}
-                                    onChange={(e) => handleInputChange("priority", e.target.value)}
-                                    label="Priority Level"
-                                >
-                                    {PRIORITIES.map((priority) => (
-                                        <MenuItem key={priority} value={priority}>{priority}</MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
+                        <Grid size={{xs: 12, sm: 6}}>
+                            <CustomSelect
+                                label="Priority Level"
+                                value={formData.priority}
+                                onChange={(e) => handleInputChange("priority", e.target.value)}
+                                option={PRIORITIES}
+                            />
                         </Grid>
                         <Grid size={{xs: 12}}>
-                            <TextField
+                            <CustomTextField
                                 label="Issue Description"
-                                fullWidth
                                 multiline
-                                rows={5}
-                                required
+                                rows={4}
                                 value={formData.description}
                                 onChange={(e) => handleInputChange("description", e.target.value)}
                             />
@@ -232,7 +137,7 @@ export const UserTicketForm = () => {
                         variant="contained"
                         color="primary"
                         fullWidth
-                        sx={{ mt: 3 }}
+                        sx={{ mt: 3, borderRadius: "10px" }}
                         disabled={!formData.name || !formData.email || !formData.category || !formData.priority || !formData.description}
                     >
                         Submit Ticket
