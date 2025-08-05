@@ -5,7 +5,7 @@ const Title = ({ children, sx = {}, ...props }) => {
     return (
         <Typography
             variant="h6"
-            sx={{ fontFamily: 'Outfit, sans-serif',opacity: 0.6, py: 1, ...sx }}
+            sx={{ fontFamily: 'Outfit, sans-serif', opacity: 0.6, py: 1, ...sx }}
             {...props}
         >
             {children}
