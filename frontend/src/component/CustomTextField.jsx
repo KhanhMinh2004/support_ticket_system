@@ -1,6 +1,6 @@
 import TextField from '@mui/material/TextField'
 
-const CustomTextField = ({label, value, onChange, ...rest}) => {
+const CustomTextField = ({label, value, onChange, fontSize = "15px", ...rest}) => {
     return (
         <TextField
             label={label}
@@ -10,7 +10,7 @@ const CustomTextField = ({label, value, onChange, ...rest}) => {
             onChange={onChange}
             InputProps={{
                 style: {
-                    fontSize: "15px",
+                    fontSize: fontSize,
                     borderRadius: "10px",
                 },
             }}

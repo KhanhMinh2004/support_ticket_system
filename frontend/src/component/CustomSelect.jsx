@@ -5,7 +5,7 @@ const CustomSelect = ({fullWidth = true, required = true, label, value, onChange
     return (
         <FormControl
             fullWidth
-            required
+            required={required}
         >
             <InputLabel>{label}</InputLabel>
             <Select
@@ -13,7 +13,7 @@ const CustomSelect = ({fullWidth = true, required = true, label, value, onChange
                 value={value}
                 onChange={onChange}
                 label={label}
-                sx = {{borderRadius: "10px", fontSize: "15px"}}
+                sx = {{borderRadius: "10px", fontSize: "13px"}}
                 {...rest}
             >
                 {option.map((opt) => (
