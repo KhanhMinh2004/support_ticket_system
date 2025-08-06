@@ -62,7 +62,7 @@ export const UserTicketForm = () => {
                             Ticket Submitted!
                         </Typography>
                         <Typography variant="body2" color="text.secondary" gutterBottom>
-                            Your support request has been received. Ticket ID: #TK-{Math.random().toString(36).substr(2, 9).toUpperCase()}
+                            Your support request has been received.
                         </Typography>
                         <Button fullWidth onClick={resetForm} variant="contained" sx={{ mt: 2 }}>
                             Submit Another Ticket
