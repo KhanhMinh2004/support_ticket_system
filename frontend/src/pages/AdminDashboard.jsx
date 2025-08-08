@@ -11,7 +11,7 @@ import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
 import CustomTextField from "../component/CustomTextField.jsx";
 import CustomSelect from "../component/CustomSelect.jsx";
 import TicketTable from "../component/TicketTable.jsx";
-import {mockTickets} from "../component/mock.js";
+import {mockTickets} from "../mock-data/mock.js";
 
 const STATUSES = ["Open", "In Progress", "Resolved", "All"];
 const CATEGORIES = ["Hardware Issues", "Software Problems", "Network Connectivity", "Email & Communication", "Account Access", "Security & Permissions", "All"];
@@ -23,6 +23,23 @@ const AdminDashboard = () => {
     const [selectedCategory, setSelectedCategory] = useState('All');
     const [selectedPriority, setSelectedPriority] = useState('All');
     const [selectedStatus, setSelectedStatus] = useState('All');
+
+    const handleClearFilters = () => {
+        setSearchText('');
+        setSelectedCategory('All');
+        setSelectedPriority('All');
+        setSelectedStatus('All');
+    }
+
+    const handleApplyFilters = () => {
+        //API here
+        console.log("Filters applied:", {
+            searchText,
+            selectedCategory,
+            selectedPriority,
+            selectedStatus
+        });
+    }
     return (
         <Box width='80vw' mx="auto" sx={{ mt: 5}}>
             <Title>
@@ -71,7 +88,7 @@ const AdminDashboard = () => {
                     </Typography>
                 </Box>
                 <Grid container spacing={1}>
-                    <Grid size={{xs: 6, sm: 2.4}}>
+                    <Grid size={{xs: 6, sm: 2}}>
                         <CustomTextField
                             label="Search"
                             required={false}
@@ -80,7 +97,7 @@ const AdminDashboard = () => {
                             onChange={(e) => setSearchText(e.target.value)}
                         />
                     </Grid>
-                    <Grid size={{xs: 6, sm: 2.4}}>
+                    <Grid size={{xs: 6, sm: 2}}>
                         <CustomSelect
                             label="Category"
                             option={CATEGORIES}
@@ -89,7 +106,7 @@ const AdminDashboard = () => {
                             onChange={(e) => setSelectedCategory(e.target.value)}
                         />
                     </Grid>
-                    <Grid size={{xs: 6, sm: 2.4}}>
+                    <Grid size={{xs: 6, sm: 2}}>
                         <CustomSelect
                             label="Priority"
                             value={selectedPriority}
@@ -98,7 +115,7 @@ const AdminDashboard = () => {
                             onChange={(e) => setSelectedPriority(e.target.value)}
                         />
                     </Grid>
-                    <Grid size={{xs: 6, sm: 2.4}}>
+                    <Grid size={{xs: 6, sm: 2}}>
                         <CustomSelect
                             label="Status"
                             value={selectedStatus}
@@ -107,14 +124,26 @@ const AdminDashboard = () => {
                             onChange={(e) => setSelectedStatus(e.target.value)}
                         />
                     </Grid>
-                    <Grid size={{xs: 12, sm: 2.4}}>
+                    <Grid size={{xs: 12, sm: 2}}>
                         <Button
                             fullWidth
                             variant='outlined'
                             sx={{borderRadius: '10px', height: '50px'}}
                             color='error'
+                            onClick={handleClearFilters}
                         >
                             Clear filters
+                        </Button>
+                    </Grid>
+                    <Grid size={{xs: 12, sm: 2}}>
+                        <Button
+                            fullWidth
+                            variant='outlined'
+                            sx={{borderRadius: '10px', height: '50px'}}
+                            color='primary'
+                            onClick={handleApplyFilters}
+                        >
+                            Apply Filters
                         </Button>
                     </Grid>
                 </Grid>

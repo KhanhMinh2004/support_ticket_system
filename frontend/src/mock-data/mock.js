@@ -27,7 +27,7 @@ export const mockTickets = [
         priority: "Medium",
         status: "Resolved",
         createdDate: "2025-08-03",
-        description: "Khi nhấn nút gửi, form không gửi đi và không có thông báo lỗi."
+        description: "Khi nhấn nút gửi, form không gửi đi và không có thông báo lỗi. \"Khi nhấn nút gửi, form không gửi đi và không có thông báo lỗi.\"Khi nhấn nút gửi, form không gửi đi và không có thông báo lỗi.\"Khi nhấn nút gửi, form không gửi đi và không có thông báo lỗi."
     },
     {
         id: 1004,

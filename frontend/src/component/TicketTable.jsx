@@ -1,7 +1,4 @@
 import {
-    Card,
-    CardHeader,
-    CardContent,
     Typography,
     Table,
     TableHead,
@@ -21,21 +18,10 @@ import {
 } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { useState } from 'react';
+import {getStatusColor} from "../utils/statusColor.js";
+import {getPriorityColor} from "../utils/priorityColor.js";
 
 const STATUSES = ['Open', 'Pending', 'Resolved'];
-
-const getStatusColor = (status) => {
-    switch (status) {
-        case 'Open':
-            return 'error';
-        case 'Pending':
-            return 'warning';
-        case 'Resolved':
-            return 'success';
-        default:
-            return 'default';
-    }
-};
 
 const TicketTable = ({ tickets }) => {
     const [selectedTicket, setSelectedTicket] = useState(null);
@@ -77,7 +63,7 @@ const TicketTable = ({ tickets }) => {
                                 <Chip label={ticket.category} variant="outlined" />
                             </TableCell>
                             <TableCell>
-                                <Chip label={ticket.priority} color="primary" />
+                                <Chip label={ticket.priority} sx={{backgroundColor: getPriorityColor(ticket.priority), color: 'white'}} />
                             </TableCell>
                             <TableCell>
                                 <Chip label={ticket.status} color={getStatusColor(ticket.status)} />
@@ -94,37 +80,38 @@ const TicketTable = ({ tickets }) => {
             </Table>
 
             {/* Dialog for Ticket Details */}
-            <Dialog open={openDialog} onClose={() => setOpenDialog(false)} maxWidth="md" fullWidth>
+            <Dialog open={openDialog} onClose={() => setOpenDialog(false)} maxWidth="sm" fullWidth>
                 {selectedTicket && (
                     <>
                         <DialogTitle>Ticket Details - {selectedTicket.id}</DialogTitle>
                         <DialogContent dividers>
                             <Grid container spacing={2}>
-                                <Grid item xs={6}>
-                                    <Typography variant="subtitle2">Name:</Typography>
+                                <Grid size={{xs: 6}}>
+                                    <Typography variant="subtitle2" gutterBottom>Name:</Typography>
                                     <Typography variant="body2" gutterBottom>{selectedTicket.name}</Typography>
                                 </Grid>
-                                <Grid item xs={6}>
-                                    <Typography variant="subtitle2">Email:</Typography>
+                                <Grid size={{xs: 6}}>
+                                    <Typography variant="subtitle2" gutterBottom>Email:</Typography>
                                     <Typography variant="body2" gutterBottom>{selectedTicket.email}</Typography>
                                 </Grid>
-                                <Grid item xs={6}>
-                                    <Typography variant="subtitle2">Category:</Typography>
+                                <Grid size={{xs: 6}}>
+                                    <Typography variant="subtitle2" gutterBottom>Category:</Typography>
                                     <Chip label={selectedTicket.category} variant="outlined" />
                                 </Grid>
-                                <Grid item xs={6}>
-                                    <Typography variant="subtitle2">Priority:</Typography>
-                                    <Chip label={selectedTicket.priority} color="primary" />
+                                <Grid size={{xs: 6}}>
+                                    <Typography variant="subtitle2" gutterBottom>Priority:</Typography>
+                                    <Chip label={selectedTicket.priority} sx={{backgroundColor: getPriorityColor(selectedTicket.priority)}} />
                                 </Grid>
-                                <Grid item xs={12}>
+                                <Grid size={{xs: 12}}>
                                     <Typography variant="subtitle2" gutterBottom>Description:</Typography>
                                     <Typography variant="body2" sx={{ p: 1, bgcolor: '#f5f5f5', borderRadius: 1 }}>
                                         {selectedTicket.description}
                                     </Typography>
                                 </Grid>
-                                <Grid item xs={12}>
+                                <Grid size={{xs: 12}}>
                                     <Typography variant="subtitle2" gutterBottom>Update Status:</Typography>
                                     <Select
+                                        variant='outlined'
                                         value={selectedTicket.status}
                                         onChange={handleStatusChange}
                                         fullWidth
