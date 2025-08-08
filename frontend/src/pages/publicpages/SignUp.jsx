@@ -12,9 +12,33 @@ import {
   Stack,
 } from '@mui/material';
 import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
-import Card from '../../component/Card.jsx'; // Đã styled sẵn
+import Card from '../../component/Card.jsx'; 
+import { useState } from 'react';
+import axios from 'axios';
 
 export default function SignUp() {
+  const [formData, setFormData] = useState({
+    username : "",
+    password : "",
+    email    : "",
+  })
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name] : e.target.value
+    })
+  }
+
+  const handleSignup = async (e) => {
+    e.preventDefault()
+    try {
+      const res = await axios.post('http://localhost:8000/api/users/create', formData)
+      alert(res.data.message )
+    } catch (error) {
+      alert(error.response?.data?.message || 'Register failed')
+    }
+  }
   return (
     <>
       <CssBaseline />
@@ -52,7 +76,8 @@ export default function SignUp() {
             id="email"
             type="email"
             name="email"
-            autoComplete="email"
+            value={formData.email}
+            onChange={handleChange}
             required
             fullWidth
             variant="outlined"
@@ -72,7 +97,8 @@ export default function SignUp() {
             id="username"
             type="text"
             name="username"
-            autoComplete="username"
+            value={formData.username}
+            onChange={handleChange}
             required
             fullWidth
             variant="outlined"
@@ -92,7 +118,8 @@ export default function SignUp() {
             id="password"
             type="password"
             name="password"
-            autoComplete="new-password"
+            value={formData.password}
+            onChange={handleChange}
             required
             fullWidth
             variant="outlined"
@@ -112,7 +139,6 @@ export default function SignUp() {
             id="confirm-password"
             type="password"
             name="confirm-password"
-            autoComplete="new-password"
             required
             fullWidth
             variant="outlined"
@@ -125,7 +151,7 @@ export default function SignUp() {
             }}
           />
 
-          <Button type="submit" fullWidth variant="contained" sx={{ mt: 3 }}>
+          <Button type="submit" fullWidth variant="contained" sx={{ mt: 3 }} onClick={handleSignup}>
             Sign up
           </Button>
 
