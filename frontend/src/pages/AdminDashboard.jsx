@@ -1,5 +1,5 @@
 import React, {useMemo, useState} from 'react';
-import {Box, Button, Grid, Typography} from "@mui/material";
+import {Box, Button, Grid, Pagination, Typography} from "@mui/material";
 import Title from "../component/Title";
 import Subtitle from "../component/Subtitle.jsx";
 import CustomCard from "../component/CustomCard.jsx";
@@ -21,35 +21,46 @@ const PRIORITIES = ["Low", "Medium", "High", "All"];
 
 
 const AdminDashboard = () => {
-    const [tickets, setTickets] = useState(mockTickets);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('All');
     const [selectedPriority, setSelectedPriority] = useState('All');
     const [selectedStatus, setSelectedStatus] = useState('All');
 
+    //pagination
+    const [tickets, setTickets] = useState(mockTickets);
+    const [totalTickets, setTotalTickets] = useState(50);
+    const [page, setPage] = useState(1);
+    const rowsPerPage = 5;
+
+
     const handleClearFilters = () => {
-        setSearchText('');
+        setSearchTerm('');
         setSelectedCategory('All');
         setSelectedPriority('All');
         setSelectedStatus('All');
     }
 
     const handleApplyFilters = () => {
+        setPage(1)
         //API here
-        console.log("Filters applied:", {
-            searchText,
-            selectedCategory,
-            selectedPriority,
-            selectedStatus
-        });
+        fetchTickets(searchTerm, selectedCategory, selectedPriority, selectedStatus, page);
     }
 
-    const fetchTickets = async (term) => {
+    const fetchTickets = async (term, category, priority, status, pageNumber) => {
         try {
             console.log(term)
-            // api here
-            // const res = await axios.get(`http://localhost:8000/api/tickets?search=${term}`);
-            // setTickets(res.data);
+            // const res = await axios.get(`http://localhost:8000/api/tickets`, {
+            //     params: {
+            //         search: term,
+            //         category,
+            //         priority,
+            //         status,
+            //         page: pageNumber,
+            //         limit: rowsPerPage
+            //     }
+            // });
+            // setTickets(res.data.results);
+            // setTotalTickets(res.data.total);
         } catch (err) {
             console.error(err);
         }
@@ -179,6 +190,15 @@ const AdminDashboard = () => {
                     Support Tickets
                 </Typography>
                 <TicketTable tickets={mockTickets}/>
+                <Box display="flex" justifyContent="center" mt={2}>
+                    <Pagination
+                        count={Math.ceil(totalTickets / rowsPerPage)}
+                        page={page}
+                        onChange={(e, value) => setPage(value)}
+                        color="primary"
+                        shape="rounded"
+                    />
+                </Box>
             </Box>
         </Box>
     );
