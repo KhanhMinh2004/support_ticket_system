@@ -2,11 +2,11 @@ import { useState } from "react";
 import {Button, Typography, Card, CardContent, Box, Grid} from "@mui/material";
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ConfirmationNumberOutlinedIcon from '@mui/icons-material/ConfirmationNumberOutlined';
-import Title from "../component/Title.jsx";
-import Subtitle from "../component/Subtitle.jsx";
-import CircleWrapper from "../component/CircleWrapper.jsx";
-import CustomTextField from "../component/CustomTextField.jsx";
-import CustomSelect from "../component/CustomSelect.jsx";
+import Title from "../../component/Title.jsx";
+import Subtitle from "../../component/Subtitle.jsx";
+import CircleWrapper from "../../component/CircleWrapper.jsx";
+import CustomTextField from "../../component/CustomTextField.jsx";
+import CustomSelect from "../../component/CustomSelect.jsx";
 
 const CATEGORIES = [
     "Hardware Issues",
