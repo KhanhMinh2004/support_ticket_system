@@ -1,17 +1,17 @@
 import React, {useMemo, useState} from 'react';
 import {Box, Button, Grid, Pagination, Typography} from "@mui/material";
-import Title from "../component/Title";
-import Subtitle from "../component/Subtitle.jsx";
-import CustomCard from "../component/CustomCard.jsx";
+import Title from "../../component/Title";
+import Subtitle from "../../component/Subtitle.jsx";
+import CustomCard from "../../component/CustomCard.jsx";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import WarningAmberRoundedIcon from '@mui/icons-material/WarningAmberRounded';
 import AccessTimeRoundedIcon from '@mui/icons-material/AccessTimeRounded';
 import TaskAltRoundedIcon from '@mui/icons-material/TaskAltRounded';
 import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
-import CustomTextField from "../component/CustomTextField.jsx";
-import CustomSelect from "../component/CustomSelect.jsx";
-import TicketTable from "../component/TicketTable.jsx";
-import {mockTickets} from "../mock-data/mock.js"
+import CustomTextField from "../../component/CustomTextField.jsx";
+import CustomSelect from "../../component/CustomSelect.jsx";
+import TicketTable from "../../component/TicketTable.jsx";
+import {mockTickets} from "../../mock-data/mock.js"
 import axios from "axios";
 import debounce from "lodash.debounce";
 

@@ -5,6 +5,11 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from .tasks import send_ticket_email
+from django.db.models.functions import TruncDate, TruncMonth, TruncYear
+from django.db.models import Count
+from django.db.models import Q
+from django.http import HttpResponse
+import csv
 # Create your views here.
 
 class LoginView(APIView):
@@ -52,3 +57,76 @@ class TicketPost(generics.CreateAPIView):
             ticket.create_at.isoformat(),
             ticket.user.username if ticket.user else "Anonymous"
         )
+
+class TicketViewByTime(APIView):
+
+    def get(self, request, *args, **kwargs):
+        group_by = request.query_params.get('group_by', 'day')
+        queryset = Tickets.objects.all()
+
+        if group_by == 'month':
+            queryset = queryset.annotate(period=TruncMonth('create_at'))
+        elif group_by == 'year':
+            queryset = queryset.annotate(period=TruncYear('create_at'))
+        else:
+            queryset = queryset.annotate(period=TruncDate('create_at'))
+
+        data = (
+            queryset.values('period').annotate(count=Count('id_ticket')).order_by('period')
+        )
+        
+        results = [
+            {
+                "date": item["period"].strftime("%Y-%m-%d"),
+                "count": item["count"]
+            }
+            for item in data
+        ]
+
+        return Response(results)
+
+class SearchTicketView(generics.ListAPIView):
+    serializer_class = TicketSerializer
+
+    def get_queryset(self):
+        queryset = Tickets.objects.all()
+
+        query = self.request.query_params.get('query')
+        if query:
+            queryset = queryset.filter(
+                Q(fullname__icontains=query) | 
+                Q(email__icontains=query) | 
+                Q(description__icontains=query) | 
+                Q(issue_type__icontains=query) | 
+                Q(urgently_level__icontains=query) |
+                Q(status__icontains=query) 
+            )
+        
+        issue_type = self.request.query_params.get('issue_type')
+        if issue_type:
+            queryset = queryset.filter(issue_type__iexact=issue_type)
+        
+        urgently_level = self.request.query_params.get('urgently_level')
+        if urgently_level:
+            queryset = queryset.filter(urgently_level__iexact=urgently_level)
+
+        status = self.request.query_params.get('status')
+        if status:
+            queryset = queryset.filter(status__iexact=status)
+
+        return queryset
+
+class ExportTicketCSV(generics.ListAPIView):
+    serializer_class = TicketSerializer
+
+    def get(self, request, *args, **kwargs):
+        response = HttpResponse(content_type='text/csv; charset=utf-8')
+        response.write('\ufeff')
+
+        writer = csv.writer(response)
+        writer.writerow(['ID', 'Full Name', 'Email', 'Description', 'Issue Type', 'Urgently Level', 'Status', 'Created At'])
+        for ticket in Tickets.objects.all().values_list('id_ticket', 'fullname', 'email', 'description', 'issue_type', 'urgently_level', 'status', 'create_at'):
+            writer.writerow(ticket)
+
+        response['Content-Disposition'] = 'attachment; filename="ticket.csv"'
+        return response
