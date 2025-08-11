@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useMemo, useState} from 'react';
 import {Box, Button, Grid, Typography} from "@mui/material";
 import Title from "../component/Title";
 import Subtitle from "../component/Subtitle.jsx";
@@ -11,7 +11,9 @@ import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
 import CustomTextField from "../component/CustomTextField.jsx";
 import CustomSelect from "../component/CustomSelect.jsx";
 import TicketTable from "../component/TicketTable.jsx";
-import {mockTickets} from "../mock-data/mock.js";
+import {mockTickets} from "../mock-data/mock.js"
+import axios from "axios";
+import debounce from "lodash.debounce";
 
 const STATUSES = ["Open", "In Progress", "Resolved", "All"];
 const CATEGORIES = ["Hardware Issues", "Software Problems", "Network Connectivity", "Email & Communication", "Account Access", "Security & Permissions", "All"];
@@ -19,7 +21,8 @@ const PRIORITIES = ["Low", "Medium", "High", "All"];
 
 
 const AdminDashboard = () => {
-    const [searchText, setSearchText] = useState('');
+    const [tickets, setTickets] = useState(mockTickets);
+    const [searchTerm, setSearchTerm] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('All');
     const [selectedPriority, setSelectedPriority] = useState('All');
     const [selectedStatus, setSelectedStatus] = useState('All');
@@ -39,6 +42,28 @@ const AdminDashboard = () => {
             selectedPriority,
             selectedStatus
         });
+    }
+
+    const fetchTickets = async (term) => {
+        try {
+            console.log(term)
+            // api here
+            // const res = await axios.get(`http://localhost:8000/api/tickets?search=${term}`);
+            // setTickets(res.data);
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    const debouncedSearch = useMemo(
+        () => debounce((term) => fetchTickets(term), 300),
+        []
+    )
+
+    const handleSearchChange = (e) => {
+        const value = e.target.value;
+        setSearchTerm(value);
+        debouncedSearch(value);
     }
     return (
         <Box width='80vw' mx="auto" sx={{ mt: 5}}>
@@ -93,8 +118,8 @@ const AdminDashboard = () => {
                             label="Search"
                             required={false}
                             fontSize='13px'
-                            value={searchText}
-                            onChange={(e) => setSearchText(e.target.value)}
+                            value={searchTerm}
+                            onChange={handleSearchChange}
                         />
                     </Grid>
                     <Grid size={{xs: 6, sm: 2}}>
