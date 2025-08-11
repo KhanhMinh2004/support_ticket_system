@@ -4,6 +4,7 @@ from .models import Users, Tickets
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from .tasks import send_ticket_email
 # Create your views here.
 
 class LoginView(APIView):
@@ -13,7 +14,8 @@ class LoginView(APIView):
 
         try:
             user = Users.objects.get(username = username, password = password)
-            return Response({"message" : "Login successful"}, status=status.HTTP_200_OK)
+            user_data = UserSerializer(user).data
+            return Response({"message" : "Login successful", "user" : user_data}, status=status.HTTP_200_OK)
         except Users.DoesNotExist:
             return Response(message = "Invalid information", status=status.HTTP_400_BAD_REQUEST)
 
@@ -36,3 +38,17 @@ class TicketView(generics.ListAPIView):
 class TicketPost(generics.CreateAPIView):
     queryset = Tickets.objects.all()
     serializer_class = TicketSerializer
+
+    def perform_create(self, serializer):
+        ticket = serializer.save()
+
+        send_ticket_email.delay(
+            ticket.id_ticket,
+            ticket.fullname,
+            ticket.email,
+            ticket.description,
+            ticket.issue_type,
+            ticket.urgently_level,
+            ticket.create_at.isoformat(),
+            ticket.user.username if ticket.user else "Anonymous"
+        )

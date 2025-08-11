@@ -25,7 +25,7 @@ class Tickets(models.Model):
     description = models.TextField( max_length = 500, null = False)
     issue_type = models.CharField( max_length = 50, null = False)
     urgently_level = models.CharField( max_length = 50, null = False)
-    status = models.CharField( max_length = 50, null = False, default = 'pending')
+    status = models.CharField( max_length = 50, null = False, default = 'Pending')
     create_at = models.DateTimeField( auto_now_add = True)
     user = models.ForeignKey(
         Users,
@@ -37,4 +37,4 @@ class Tickets(models.Model):
     
     class Meta:
         db_table = 'tickets'
-        managed = False
+        managed = True

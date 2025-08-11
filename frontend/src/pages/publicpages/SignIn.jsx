@@ -15,9 +15,10 @@ import ShieldIcon from '@mui/icons-material/Shield';
 import Card from '../../component/Card.jsx';
 import { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 export default function SignIn() {
-
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: '',
     password: '',
@@ -35,6 +36,12 @@ export default function SignIn() {
     try{
       const res = await axios.post('http://localhost:8000/api/login', formData)
       alert(res.data.message)
+      const userRole = res.data.user?.role
+      console.log(userRole)
+      if (userRole === 'admin'){
+        navigate('/analyst')
+      }else navigate('/ticket')
+      localStorage.setItem("role", userRole)
     } catch (error) {
       alert(error.response?.data?.message || 'Login failed');
     }
@@ -123,7 +130,11 @@ export default function SignIn() {
             }}
           />
 
-          <Button type="submit" fullWidth variant="contained"  sx={{ mt: 3 }} onClick={handleLogin}>
+          <Button type="submit" 
+          fullWidth variant="contained"  
+          sx={{ mt: 3 }} 
+          onClick={handleLogin}
+          >
             Login
           </Button>
 
