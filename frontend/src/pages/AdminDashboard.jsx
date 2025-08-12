@@ -1,4 +1,4 @@
-import React, {useMemo, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {Box, Button, Grid, Pagination, Typography} from "@mui/material";
 import Title from "../component/Title";
 import Subtitle from "../component/Subtitle.jsx";
@@ -15,6 +15,7 @@ import {mockTickets} from "../mock-data/mock.js"
 import axios from "axios";
 import debounce from "lodash.debounce";
 
+const API_URL = 'http://localhost:8000/api/tickets/';
 const STATUSES = ["Open", "In Progress", "Resolved", "All"];
 const CATEGORIES = ["Hardware Issues", "Software Problems", "Network Connectivity", "Email & Communication", "Account Access", "Security & Permissions", "All"];
 const PRIORITIES = ["Low", "Medium", "High", "All"];
@@ -27,17 +28,22 @@ const AdminDashboard = () => {
     const [selectedStatus, setSelectedStatus] = useState('All');
 
     //pagination
-    const [tickets, setTickets] = useState(mockTickets);
+    const [tickets, setTickets] = useState([]);
     const [totalTickets, setTotalTickets] = useState(50);
     const [page, setPage] = useState(1);
     const rowsPerPage = 5;
 
+    useEffect(() => {
+        fetchTickets(searchTerm, selectedCategory, selectedPriority, selectedStatus, page);
+    }, []);
 
     const handleClearFilters = () => {
         setSearchTerm('');
         setSelectedCategory('All');
         setSelectedPriority('All');
         setSelectedStatus('All');
+        setPage(1);
+        fetchTickets(searchTerm, selectedCategory, selectedPriority, selectedStatus, page);
     }
 
     const handleApplyFilters = () => {
@@ -49,32 +55,34 @@ const AdminDashboard = () => {
     const fetchTickets = async (term, category, priority, status, pageNumber) => {
         try {
             console.log(term)
-            // const res = await axios.get(`http://localhost:8000/api/tickets`, {
-            //     params: {
-            //         search: term,
-            //         category,
-            //         priority,
-            //         status,
-            //         page: pageNumber,
-            //         limit: rowsPerPage
-            //     }
-            // });
-            // setTickets(res.data.results);
-            // setTotalTickets(res.data.total);
+            const res = await axios.get(API_URL, {
+                params: {
+                    search: term,
+                    category: category !== 'All' ? category : undefined,
+                    priority: priority !== 'All' ? priority : undefined,
+                    status: status !== 'All' ? status : undefined,
+                    page: pageNumber,
+                }
+            });
+            setTickets(res.data.results);
+            setTotalTickets(res.data.count);
         } catch (err) {
             console.error(err);
         }
     }
 
     const debouncedSearch = useMemo(
-        () => debounce((term) => fetchTickets(term), 300),
+        () => debounce((term, status, priority, category) => {
+            setPage(1)
+            fetchTickets(term, status, priority, category, 1)
+        }, 300),
         []
     )
 
     const handleSearchChange = (e) => {
         const value = e.target.value;
         setSearchTerm(value);
-        debouncedSearch(value);
+        debouncedSearch(value, selectedStatus, selectedPriority, selectedCategory);
     }
     return (
         <Box width='80vw' mx="auto" sx={{ mt: 5}}>
@@ -189,7 +197,7 @@ const AdminDashboard = () => {
                 <Typography sx={{fontWeight: 500, fontSize: '20px'}}>
                     Support Tickets
                 </Typography>
-                <TicketTable tickets={mockTickets}/>
+                <TicketTable tickets={tickets}/>
                 <Box display="flex" justifyContent="center" mt={2}>
                     <Pagination
                         count={Math.ceil(totalTickets / rowsPerPage)}
