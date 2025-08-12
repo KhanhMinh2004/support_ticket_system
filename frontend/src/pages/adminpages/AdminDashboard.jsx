@@ -1,4 +1,4 @@
-import React, {useMemo, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {Box, Button, Grid, Pagination, Typography} from "@mui/material";
 import Title from "../../component/Title";
 import Subtitle from "../../component/Subtitle.jsx";
@@ -15,6 +15,7 @@ import {mockTickets} from "../../mock-data/mock.js"
 import axios from "axios";
 import debounce from "lodash.debounce";
 
+const API_URL = 'http://localhost:8000/api/tickets/';
 const STATUSES = ["Open", "In Progress", "Resolved", "All"];
 const CATEGORIES = ["Hardware Issues", "Software Problems", "Network Connectivity", "Email & Communication", "Account Access", "Security & Permissions", "All"];
 const PRIORITIES = ["Low", "Medium", "High", "All"];
@@ -27,54 +28,80 @@ const AdminDashboard = () => {
     const [selectedStatus, setSelectedStatus] = useState('All');
 
     //pagination
-    const [tickets, setTickets] = useState(mockTickets);
+    const [tickets, setTickets] = useState([]);
     const [totalTickets, setTotalTickets] = useState(50);
     const [page, setPage] = useState(1);
     const rowsPerPage = 5;
 
+    //count
+    const [counts, setCounts] = useState({
+        total: 0,
+        open: 0,
+        in_progress: 0,
+        resolved: 0
+    });
+
+    useEffect(() => {
+        fetchCounts()
+    }, []);
+
+    useEffect(() => {
+        fetchTickets(searchTerm, selectedCategory, selectedPriority, selectedStatus, page);
+    }, [page]);
 
     const handleClearFilters = () => {
         setSearchTerm('');
         setSelectedCategory('All');
         setSelectedPriority('All');
         setSelectedStatus('All');
+        setPage(1);
+        fetchTickets('', 'All', 'All', 'All', 1);
     }
 
     const handleApplyFilters = () => {
         setPage(1)
-        //API here
         fetchTickets(searchTerm, selectedCategory, selectedPriority, selectedStatus, page);
+    }
+
+    const fetchCounts = async () => {
+        try {
+            const res = await axios.get(API_URL + 'counts');
+            setCounts(res.data);
+        } catch (error) {
+            console.error("Error fetching ticket counts:", error);
+        }
     }
 
     const fetchTickets = async (term, category, priority, status, pageNumber) => {
         try {
-            console.log(term)
-            // const res = await axios.get(`http://localhost:8000/api/tickets`, {
-            //     params: {
-            //         search: term,
-            //         category,
-            //         priority,
-            //         status,
-            //         page: pageNumber,
-            //         limit: rowsPerPage
-            //     }
-            // });
-            // setTickets(res.data.results);
-            // setTotalTickets(res.data.total);
+            const res = await axios.get(API_URL, {
+                params: {
+                    search: term,
+                    category: category !== 'All' ? category : undefined,
+                    priority: priority !== 'All' ? priority : undefined,
+                    status: status !== 'All' ? status : undefined,
+                    page: pageNumber,
+                }
+            });
+            setTickets(res.data.results);
+            setTotalTickets(res.data.count);
         } catch (err) {
             console.error(err);
         }
     }
 
     const debouncedSearch = useMemo(
-        () => debounce((term) => fetchTickets(term), 300),
+        () => debounce((term, category, priority, status) => {
+            setPage(1)
+            fetchTickets(term, category, priority, status, 1)
+        }, 300),
         []
     )
 
     const handleSearchChange = (e) => {
         const value = e.target.value;
         setSearchTerm(value);
-        debouncedSearch(value);
+        debouncedSearch(value, selectedCategory, selectedPriority, selectedStatus);
     }
     return (
         <Box width='80vw' mx="auto" sx={{ mt: 5}}>
@@ -89,28 +116,28 @@ const AdminDashboard = () => {
                 <Grid size={{xs: 6, sm: 3}}>
                     <CustomCard
                         label="Total Tickets"
-                        number={12}
+                        number={counts.total}
                         icon={<PersonOutlineOutlinedIcon color="primary" sx={{ fontSize: 50}}/>}
                     />
                 </Grid>
                 <Grid size={{xs: 6, sm: 3}}>
                     <CustomCard
                         label="Open Tickets"
-                        number={12}
+                        number={counts.open}
                         icon={<WarningAmberRoundedIcon color="error" sx={{ fontSize: 50}}/>}
                     />
                 </Grid>
                 <Grid size={{xs: 6, sm: 3}}>
                     <CustomCard
                         label="In Progress"
-                        number={12}
+                        number={counts.in_progress}
                         icon={<AccessTimeRoundedIcon color="warning" sx={{ fontSize: 50}}/>}
                     />
                 </Grid>
                 <Grid size={{xs: 6, sm: 3}}>
                     <CustomCard
-                        label="Resolved Tickets"
-                        number={12}
+                        label="Resolved"
+                        number={counts.resolved}
                         icon={<TaskAltRoundedIcon color="success" sx={{ fontSize: 50}}/>}
                     />
                 </Grid>
@@ -189,7 +216,7 @@ const AdminDashboard = () => {
                 <Typography sx={{fontWeight: 500, fontSize: '20px'}}>
                     Support Tickets
                 </Typography>
-                <TicketTable tickets={mockTickets}/>
+                <TicketTable tickets={tickets}/>
                 <Box display="flex" justifyContent="center" mt={2}>
                     <Pagination
                         count={Math.ceil(totalTickets / rowsPerPage)}

@@ -21,7 +21,7 @@ import { useState } from 'react';
 import {getStatusColor} from "../utils/statusColor.js";
 import {getPriorityColor} from "../utils/priorityColor.js";
 
-const STATUSES = ['Open', 'Pending', 'Resolved'];
+const STATUSES = ['Open', 'In Progress', 'Resolved'];
 
 const TicketTable = ({ tickets }) => {
     const [selectedTicket, setSelectedTicket] = useState(null);
@@ -45,7 +45,7 @@ const TicketTable = ({ tickets }) => {
                     <TableRow>
                         <TableCell>ID</TableCell>
                         <TableCell>Name</TableCell>
-                        <TableCell>Email</TableCell>
+                        <TableCell>Title</TableCell>
                         <TableCell>Category</TableCell>
                         <TableCell>Priority</TableCell>
                         <TableCell>Status</TableCell>
@@ -58,7 +58,7 @@ const TicketTable = ({ tickets }) => {
                         <TableRow key={ticket.id}>
                             <TableCell>{ticket.id}</TableCell>
                             <TableCell>{ticket.name}</TableCell>
-                            <TableCell>{ticket.email}</TableCell>
+                            <TableCell>{ticket.title}</TableCell>
                             <TableCell>
                                 <Chip label={ticket.category} variant="outlined" />
                             </TableCell>
@@ -68,7 +68,7 @@ const TicketTable = ({ tickets }) => {
                             <TableCell>
                                 <Chip label={ticket.status} color={getStatusColor(ticket.status)} />
                             </TableCell>
-                            <TableCell>{ticket.createdDate}</TableCell>
+                            <TableCell>{ticket.created_at}</TableCell>
                             <TableCell>
                                 <IconButton onClick={() => handleView(ticket)} size="small">
                                     <VisibilityIcon />
@@ -101,6 +101,12 @@ const TicketTable = ({ tickets }) => {
                                 <Grid size={{xs: 6}}>
                                     <Typography variant="subtitle2" gutterBottom>Priority:</Typography>
                                     <Chip label={selectedTicket.priority} sx={{backgroundColor: getPriorityColor(selectedTicket.priority)}} />
+                                </Grid>
+                                <Grid size={{xs: 12}}>
+                                    <Typography variant="subtitle2" gutterBottom>Title:</Typography>
+                                    <Typography variant="body2" sx={{ p: 1, bgcolor: '#f5f5f5', borderRadius: 1 }}>
+                                        {selectedTicket.title}
+                                    </Typography>
                                 </Grid>
                                 <Grid size={{xs: 12}}>
                                     <Typography variant="subtitle2" gutterBottom>Description:</Typography>
