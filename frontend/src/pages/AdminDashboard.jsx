@@ -33,6 +33,18 @@ const AdminDashboard = () => {
     const [page, setPage] = useState(1);
     const rowsPerPage = 5;
 
+    //count
+    const [counts, setCounts] = useState({
+        total: 0,
+        open: 0,
+        in_progress: 0,
+        resolved: 0
+    });
+
+    useEffect(() => {
+        fetchCounts()
+    }, []);
+
     useEffect(() => {
         fetchTickets(searchTerm, selectedCategory, selectedPriority, selectedStatus, page);
     }, [page]);
@@ -49,6 +61,15 @@ const AdminDashboard = () => {
     const handleApplyFilters = () => {
         setPage(1)
         fetchTickets(searchTerm, selectedCategory, selectedPriority, selectedStatus, page);
+    }
+
+    const fetchCounts = async () => {
+        try {
+            const res = await axios.get(API_URL + 'counts');
+            setCounts(res.data);
+        } catch (error) {
+            console.error("Error fetching ticket counts:", error);
+        }
     }
 
     const fetchTickets = async (term, category, priority, status, pageNumber) => {
@@ -95,28 +116,28 @@ const AdminDashboard = () => {
                 <Grid size={{xs: 6, sm: 3}}>
                     <CustomCard
                         label="Total Tickets"
-                        number={12}
+                        number={counts.total}
                         icon={<PersonOutlineOutlinedIcon color="primary" sx={{ fontSize: 50}}/>}
                     />
                 </Grid>
                 <Grid size={{xs: 6, sm: 3}}>
                     <CustomCard
                         label="Open Tickets"
-                        number={12}
+                        number={counts.open}
                         icon={<WarningAmberRoundedIcon color="error" sx={{ fontSize: 50}}/>}
                     />
                 </Grid>
                 <Grid size={{xs: 6, sm: 3}}>
                     <CustomCard
                         label="In Progress"
-                        number={12}
+                        number={counts.in_progress}
                         icon={<AccessTimeRoundedIcon color="warning" sx={{ fontSize: 50}}/>}
                     />
                 </Grid>
                 <Grid size={{xs: 6, sm: 3}}>
                     <CustomCard
-                        label="Resolved Tickets"
-                        number={12}
+                        label="Resolved"
+                        number={counts.resolved}
                         icon={<TaskAltRoundedIcon color="success" sx={{ fontSize: 50}}/>}
                     />
                 </Grid>
