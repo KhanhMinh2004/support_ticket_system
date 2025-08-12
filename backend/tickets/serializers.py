@@ -5,6 +5,9 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = Users
         fields = ['id_user', 'username', 'password', 'email', 'role']
+        extra_kwargs = {
+            'role': {'required': False}
+        }
 
 class TicketSerializer(serializers.ModelSerializer):
     class Meta:

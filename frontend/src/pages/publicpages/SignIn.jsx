@@ -13,8 +13,40 @@ import {
 } from '@mui/material';
 import ShieldIcon from '@mui/icons-material/Shield';
 import Card from '../../component/Card.jsx';
+import { useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 export default function SignIn() {
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    username: '',
+    password: '',
+  })
+  
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name] : e.target.value,
+    })
+  }
+
+  const handleLogin = async (e) => {
+    e.preventDefault()
+    try{
+      const res = await axios.post('http://localhost:8000/api/login', formData)
+      alert(res.data.message)
+      const userRole = res.data.user?.role
+      console.log(userRole)
+      if (userRole === 'admin'){
+        navigate('/analyst')
+      }else navigate('/ticket')
+      localStorage.setItem("role", userRole)
+    } catch (error) {
+      alert(error.response?.data?.message || 'Login failed');
+    }
+  }
+
   return (
     <>
       <CssBaseline />
@@ -67,6 +99,8 @@ export default function SignIn() {
             id="username"
             type="text"
             name="username"
+            value={formData.username}
+            onChange={handleChange}
             required
             fullWidth
             variant="outlined"
@@ -83,6 +117,8 @@ export default function SignIn() {
             id="password"
             type="password"
             name="password"
+            value={formData.password}
+            onChange={handleChange}
             required
             fullWidth
             variant="outlined"
@@ -94,7 +130,11 @@ export default function SignIn() {
             }}
           />
 
-          <Button type="submit" fullWidth variant="contained"  sx={{ mt: 3 }}>
+          <Button type="submit" 
+          fullWidth variant="contained"  
+          sx={{ mt: 3 }} 
+          onClick={handleLogin}
+          >
             Login
           </Button>
 
