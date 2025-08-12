@@ -150,8 +150,14 @@ if os.environ.get("DOCKER") == "1":
 else:
     REDIS_HOST = "localhost"
 
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+
+if os.environ.get("DOCKER") == "1":
+    REDIS_HOST = "redis"  
+else:
+    REDIS_HOST = "localhost"  
+
+CELERY_BROKER_URL = f'redis://{REDIS_HOST}:6379/0'
+CELERY_RESULT_BACKEND = f'redis://{REDIS_HOST}:6379/0'
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
