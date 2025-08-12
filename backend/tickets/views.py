@@ -5,9 +5,10 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from .tasks import send_ticket_email
-from django.db.models.functions import TruncDate, TruncMonth, TruncYear
+from django.db.models.functions import TruncDate, TruncMonth, TruncYear, TruncDay
 from django.db.models import Count
 from django.db.models import Q
+from datetime import datetime
 from django.http import HttpResponse
 import csv
 # Create your views here.
@@ -62,26 +63,64 @@ class TicketViewByTime(APIView):
 
     def get(self, request, *args, **kwargs):
         group_by = request.query_params.get('group_by', 'day')
+        date_filter = request.query_params.get('date', None)
         queryset = Tickets.objects.all()
 
         if group_by == 'month':
             queryset = queryset.annotate(period=TruncMonth('create_at'))
-        elif group_by == 'year':
-            queryset = queryset.annotate(period=TruncYear('create_at'))
-        else:
-            queryset = queryset.annotate(period=TruncDate('create_at'))
-
-        data = (
+            data = (
             queryset.values('period').annotate(count=Count('id_ticket')).order_by('period')
         )
-        
-        results = [
-            {
-                "date": item["period"].strftime("%Y-%m-%d"),
-                "count": item["count"]
-            }
-            for item in data
-        ]
+            results = [
+                {
+                    "date": item["period"].strftime("%Y-%m"),
+                    "count": item["count"]
+                }
+                for item in data
+            ]
+
+        elif group_by == 'year':
+            queryset = queryset.annotate(period=TruncYear('create_at'))
+            data = (
+            queryset.values('period').annotate(count=Count('id_ticket')).order_by('period')
+        )
+            results = [
+                {
+                    "date": item["period"].strftime("%Y"),
+                    "count": item["count"]
+                }
+                for item in data
+            ]
+
+        elif group_by == 'day':
+            queryset = queryset.annotate(period=TruncDay('create_at'))
+            if date_filter:
+                try:
+                    date_obj = datetime.strptime(date_filter, '%Y-%m-%d').date()
+                    queryset = queryset.filter(period=date_obj)
+                except ValueError:
+                    pass
+            data = (queryset.values('period').annotate(count=Count('id_ticket')).order_by('period'))
+            results = [
+                {
+                    "date": item["period"].strftime("%Y-%m-%d"),
+                    "count": item["count"]
+                }
+                for item in data
+            ]
+
+        else:
+            queryset = queryset.annotate(period=TruncDate('create_at'))
+            data = (
+                queryset.values('period').annotate(count=Count('id_ticket')).order_by('period')
+            )    
+            results = [
+                {
+                    "date": item["period"].strftime("%Y-%m-%d"),
+                    "count": item["count"]
+                }
+                for item in data
+            ]
 
         return Response(results)
 
