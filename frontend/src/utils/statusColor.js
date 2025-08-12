@@ -2,7 +2,7 @@ export const getStatusColor = (status) => {
     switch (status) {
         case 'Open':
             return 'error';
-        case 'Pending':
+        case 'In Progress':
             return 'warning';
         case 'Resolved':
             return 'success';

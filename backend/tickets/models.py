@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 
 # Create your models here.
 
@@ -18,23 +19,41 @@ class Users(models.Model):
         managed = True
         
 
-class Tickets(models.Model):
-    id_ticket = models.AutoField( primary_key=True)
-    fullname = models.CharField( max_length = 100, null = False)
-    email = models.EmailField( max_length = 100, null = False)
-    description = models.TextField( max_length = 500, null = False)
-    issue_type = models.CharField( max_length = 50, null = False)
-    urgently_level = models.CharField( max_length = 50, null = False)
-    status = models.CharField( max_length = 50, null = False, default = 'Pending')
-    create_at = models.DateTimeField( auto_now_add = True)
+class Ticket(models.Model):
+    CATEGORY_CHOICES = [
+        ("Hardware Issues", "Hardware Issues"),
+        ("Software Problems", "Software Problems"),
+        ("Network Connectivity", "Network Connectivity"),
+        ("Email & Communication", "Email & Communication"),
+        ("Account Access", "Account Access"),
+        ("Security & Permissions", "Security & Permissions"),
+        ("Other", "Other"),
+    ]
+
+    PRIORITY_CHOICES = [
+        ("Low", "Low"),
+        ("Medium", "Medium"),
+        ("High", "High"),
+    ]
+
+    STATUS_CHOICES = [
+        ("Open", "Open"),
+        ("In Progress", "In Progress"),
+        ("Resolved", "Resolved")
+    ]
+
+    title = models.CharField(max_length=255)
+    description = models.TextField()
+    category = models.CharField(max_length=50, choices=CATEGORY_CHOICES)
+    priority = models.CharField(max_length=20, choices=PRIORITY_CHOICES)
+    status = models.CharField(max_length=20, choices = STATUS_CHOICES, default="Open")
     user = models.ForeignKey(
-        Users,
-        to_field='id_user',
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name='tickets',
-        db_column='id_user'  
+        related_name='tickets'
     )
-    
-    class Meta:
-        db_table = 'tickets'
-        managed = True
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.title} ({self.status})"
