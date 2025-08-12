@@ -35,7 +35,7 @@ const AdminDashboard = () => {
 
     useEffect(() => {
         fetchTickets(searchTerm, selectedCategory, selectedPriority, selectedStatus, page);
-    }, []);
+    }, [page]);
 
     const handleClearFilters = () => {
         setSearchTerm('');
@@ -43,18 +43,16 @@ const AdminDashboard = () => {
         setSelectedPriority('All');
         setSelectedStatus('All');
         setPage(1);
-        fetchTickets(searchTerm, selectedCategory, selectedPriority, selectedStatus, page);
+        fetchTickets('', 'All', 'All', 'All', 1);
     }
 
     const handleApplyFilters = () => {
         setPage(1)
-        //API here
         fetchTickets(searchTerm, selectedCategory, selectedPriority, selectedStatus, page);
     }
 
     const fetchTickets = async (term, category, priority, status, pageNumber) => {
         try {
-            console.log(term)
             const res = await axios.get(API_URL, {
                 params: {
                     search: term,
@@ -72,9 +70,9 @@ const AdminDashboard = () => {
     }
 
     const debouncedSearch = useMemo(
-        () => debounce((term, status, priority, category) => {
+        () => debounce((term, category, priority, status) => {
             setPage(1)
-            fetchTickets(term, status, priority, category, 1)
+            fetchTickets(term, category, priority, status, 1)
         }, 300),
         []
     )
@@ -82,7 +80,7 @@ const AdminDashboard = () => {
     const handleSearchChange = (e) => {
         const value = e.target.value;
         setSearchTerm(value);
-        debouncedSearch(value, selectedStatus, selectedPriority, selectedCategory);
+        debouncedSearch(value, selectedCategory, selectedPriority, selectedStatus);
     }
     return (
         <Box width='80vw' mx="auto" sx={{ mt: 5}}>

@@ -21,7 +21,7 @@ import { useState } from 'react';
 import {getStatusColor} from "../utils/statusColor.js";
 import {getPriorityColor} from "../utils/priorityColor.js";
 
-const STATUSES = ['Open', 'Pending', 'Resolved'];
+const STATUSES = ['Open', 'In Progress', 'Resolved'];
 
 const TicketTable = ({ tickets }) => {
     const [selectedTicket, setSelectedTicket] = useState(null);
