@@ -31,21 +31,24 @@ export default function SignIn() {
     })
   }
 
-  const handleLogin = async (e) => {
-    e.preventDefault()
-    try{
-      const res = await axios.post('http://localhost:8000/api/login', formData)
-      alert(res.data.message)
-      const userRole = res.data.user?.role
-      console.log(userRole)
-      if (userRole === 'admin'){
-        navigate('/analyst')
-      }else navigate('/ticket')
-      localStorage.setItem("role", userRole)
-    } catch (error) {
-      alert(error.response?.data?.message || 'Login failed');
+    const handleLogin = async (e) => {
+        e.preventDefault()
+        try {
+            const res = await axios.post('http://localhost:8000/api/login', formData)
+
+            const {message, user, token} = res.data
+            localStorage.setItem('token', token)
+            const isStaff = user.is_staff
+            console.log(isStaff)
+            if (isStaff){
+                navigate('/admin')
+            } else navigate('/ticket')
+
+        } catch (error) {
+            console.log(error)
+            console.log(error.response?.data?.message || 'Login failed');
+        }
     }
-  }
 
   return (
     <>

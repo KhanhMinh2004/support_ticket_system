@@ -1,13 +1,13 @@
 from rest_framework import serializers
-from .models import Users, Ticket
+from django.contrib.auth import get_user_model
+from .models import Ticket
+
+User = get_user_model()
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Users
-        fields = ['id_user', 'username', 'password', 'email', 'role']
-        extra_kwargs = {
-            'role': {'required': False}
-        }
+        model = User
+        fields = ['id', 'username', 'email', 'is_staff']
 
 class TicketSerializer(serializers.ModelSerializer):
     class Meta:
