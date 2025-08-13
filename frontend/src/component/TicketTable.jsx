@@ -58,7 +58,7 @@ const TicketTable = ({ tickets, onTicketUpdate}) => {
                 <TableHead>
                     <TableRow>
                         <TableCell>ID</TableCell>
-                        <TableCell>Name</TableCell>
+                        <TableCell>Full Name</TableCell>
                         <TableCell>Title</TableCell>
                         <TableCell>Category</TableCell>
                         <TableCell>Priority</TableCell>
@@ -71,7 +71,7 @@ const TicketTable = ({ tickets, onTicketUpdate}) => {
                     {tickets.map((ticket) => (
                         <TableRow key={ticket.id}>
                             <TableCell>{ticket.id}</TableCell>
-                            <TableCell>{ticket.name}</TableCell>
+                            <TableCell>{ticket.full_name}</TableCell>
                             <TableCell>{ticket.title}</TableCell>
                             <TableCell>
                                 <Chip label={ticket.category} variant="outlined" />
@@ -102,7 +102,7 @@ const TicketTable = ({ tickets, onTicketUpdate}) => {
                             <Grid container spacing={2}>
                                 <Grid size={{xs: 6}}>
                                     <Typography variant="subtitle2" gutterBottom>Name:</Typography>
-                                    <Typography variant="body2" gutterBottom>{selectedTicket.name}</Typography>
+                                    <Typography variant="body2" gutterBottom>{selectedTicket.full_name}</Typography>
                                 </Grid>
                                 <Grid size={{xs: 6}}>
                                     <Typography variant="subtitle2" gutterBottom>Email:</Typography>
