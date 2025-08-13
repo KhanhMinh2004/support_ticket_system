@@ -20,10 +20,11 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import { useState } from 'react';
 import {getStatusColor} from "../utils/statusColor.js";
 import {getPriorityColor} from "../utils/priorityColor.js";
+import axios from "axios";
 
 const STATUSES = ['Open', 'In Progress', 'Resolved'];
 
-const TicketTable = ({ tickets }) => {
+const TicketTable = ({ tickets, onTicketUpdate}) => {
     const [selectedTicket, setSelectedTicket] = useState(null);
     const [openDialog, setOpenDialog] = useState(false);
 
@@ -35,8 +36,21 @@ const TicketTable = ({ tickets }) => {
     const handleStatusChange = (e) => {
         const updated = { ...selectedTicket, status: e.target.value };
         setSelectedTicket(updated);
-        // TODO: Update backend here
     };
+
+    const handleSave = async () => {
+        try {
+            await axios.patch('http://localhost:8000/api/tickets/' + selectedTicket.id + '/status', {
+                status: selectedTicket.status,
+            })
+            onTicketUpdate({ ...selectedTicket, status: selectedTicket.status });
+
+            setOpenDialog(false);
+        } catch (err){
+            console.error("Error updating ticket status:", err);
+            alert(err.response?.data?.message || "Failed to update ticket status");
+        }
+    }
 
     return (
         <>
@@ -44,7 +58,7 @@ const TicketTable = ({ tickets }) => {
                 <TableHead>
                     <TableRow>
                         <TableCell>ID</TableCell>
-                        <TableCell>Name</TableCell>
+                        <TableCell>Full Name</TableCell>
                         <TableCell>Title</TableCell>
                         <TableCell>Category</TableCell>
                         <TableCell>Priority</TableCell>
@@ -57,7 +71,7 @@ const TicketTable = ({ tickets }) => {
                     {tickets.map((ticket) => (
                         <TableRow key={ticket.id}>
                             <TableCell>{ticket.id}</TableCell>
-                            <TableCell>{ticket.name}</TableCell>
+                            <TableCell>{ticket.full_name}</TableCell>
                             <TableCell>{ticket.title}</TableCell>
                             <TableCell>
                                 <Chip label={ticket.category} variant="outlined" />
@@ -88,7 +102,7 @@ const TicketTable = ({ tickets }) => {
                             <Grid container spacing={2}>
                                 <Grid size={{xs: 6}}>
                                     <Typography variant="subtitle2" gutterBottom>Name:</Typography>
-                                    <Typography variant="body2" gutterBottom>{selectedTicket.name}</Typography>
+                                    <Typography variant="body2" gutterBottom>{selectedTicket.full_name}</Typography>
                                 </Grid>
                                 <Grid size={{xs: 6}}>
                                     <Typography variant="subtitle2" gutterBottom>Email:</Typography>
@@ -133,7 +147,7 @@ const TicketTable = ({ tickets }) => {
                         </DialogContent>
                         <DialogActions>
                             <Button onClick={() => setOpenDialog(false)}>Close</Button>
-                            <Button variant="contained" onClick={() => setOpenDialog(false)}>
+                            <Button variant="contained" onClick={handleSave}>
                                 Save
                             </Button>
                         </DialogActions>
