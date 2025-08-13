@@ -65,6 +65,27 @@ class TicketListCreateView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
+class TicketStatusUpdateView(generics.UpdateAPIView):
+    queryset = Ticket.objects.all()
+    serializer_class = TicketSerializer
+
+    def update(self, request, *args, **kwargs):
+        ticket = self.get_object()
+        new_status = request.data.get('status')
+
+        if not new_status:
+            return Response({"error": "Status is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        ticket.status = new_status
+        ticket.save()
+
+        return Response({
+            "message": "Ticket status updated",
+            "id": ticket.id,
+            "status": ticket.status,
+        }, status=status.HTTP_200_OK)
+
+
 @api_view(['GET'])
 def ticket_counts(request):
     counts = {
