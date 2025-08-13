@@ -49,6 +49,12 @@ const AdminDashboard = () => {
         fetchTickets(searchTerm, selectedCategory, selectedPriority, selectedStatus, page);
     }, [page]);
 
+    const handleTicketUpdate = (updatedTicket) => {
+        setTickets(prevTickets =>
+            prevTickets.map(ticket => ticket.id === updatedTicket.id ? updatedTicket : ticket)
+        )
+    }
+
     const handleClearFilters = () => {
         setSearchTerm('');
         setSelectedCategory('All');
@@ -216,7 +222,7 @@ const AdminDashboard = () => {
                 <Typography sx={{fontWeight: 500, fontSize: '20px'}}>
                     Support Tickets
                 </Typography>
-                <TicketTable tickets={tickets}/>
+                <TicketTable tickets={tickets} onTicketUpdate={handleTicketUpdate}/>
                 <Box display="flex" justifyContent="center" mt={2}>
                     <Pagination
                         count={Math.ceil(totalTickets / rowsPerPage)}
