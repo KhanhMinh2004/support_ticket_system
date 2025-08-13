@@ -7,6 +7,7 @@ import Subtitle from "../../component/Subtitle.jsx";
 import CircleWrapper from "../../component/CircleWrapper.jsx";
 import CustomTextField from "../../component/CustomTextField.jsx";
 import CustomSelect from "../../component/CustomSelect.jsx";
+import axios from "axios";
 
 const CATEGORIES = [
     "Hardware Issues",
@@ -22,7 +23,7 @@ const PRIORITIES = ["Low", "Medium", "High"];
 
 export const UserTicketForm = () => {
     const [formData, setFormData] = useState({
-        name: "",
+        title: "",
         email: "",
         category: "",
         priority: "",
@@ -30,11 +31,24 @@ export const UserTicketForm = () => {
     });
     const [isSubmitted, setIsSubmitted] = useState(false);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        setTimeout(() => {
-            setIsSubmitted(true);
-        }, 500);
+
+        try{
+            const token = localStorage.getItem("token")
+            const res = await axios.post(
+                'http://localhost:8000/api/tickets/',
+                formData, {
+                    headers: {
+                        Authorization: `Token ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                })
+            setIsSubmitted(true)
+        } catch (error) {
+            console.log(error)
+            alert(error.response?.data?.message || "Error occurred while submitting the ticket");
+        }
     };
 
     const handleInputChange = (field, value) => {
@@ -43,7 +57,7 @@ export const UserTicketForm = () => {
 
     const resetForm = () => {
         setFormData({
-            name: "",
+            title: "",
             email: "",
             category: "",
             priority: "",
@@ -93,9 +107,9 @@ export const UserTicketForm = () => {
                     <Grid container spacing={3}>
                         <Grid size={{xs: 12, sm: 6}}>
                             <CustomTextField
-                                label="Full Name"
-                                value={formData.name}
-                                onChange={(e) => handleInputChange("name", e.target.value)}
+                                label="Title"
+                                value={formData.title}
+                                onChange={(e) => handleInputChange("title", e.target.value)}
                             />
                         </Grid>
                         <Grid size={{xs: 12, sm: 6}}>
@@ -138,7 +152,7 @@ export const UserTicketForm = () => {
                         color="primary"
                         fullWidth
                         sx={{ mt: 3, borderRadius: "10px" }}
-                        disabled={!formData.name || !formData.email || !formData.category || !formData.priority || !formData.description}
+                        disabled={!formData.title || !formData.email || !formData.category || !formData.priority || !formData.description}
                     >
                         Submit Ticket
                     </Button>
