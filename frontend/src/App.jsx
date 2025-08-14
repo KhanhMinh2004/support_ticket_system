@@ -11,20 +11,6 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 
-
-
-function PrivateRoute({ children }) {
-    const navigate = useNavigate();
-    const role = localStorage.getItem("is_staff")
-
-    useEffect(() => {
-        if (role !== 'true'){
-            navigate('/signin')
-        }
-    }, [role, navigate])
-    return children
-}
-
 import {AdminRoute, UserRoute} from "./component/ProtectedRoute.jsx";
 
 

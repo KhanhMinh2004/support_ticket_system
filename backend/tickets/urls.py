@@ -5,9 +5,6 @@ from .views import TicketListCreateView, ticket_counts, LoginView, TicketViewByT
 urlpatterns = [
     path('login', LoginView.as_view(), name = 'login-view'),
     path('register', RegisterView.as_view(), name = 'register-view'),
-#     path('users', UserView.as_view(), name = 'user-view'),
-#     path('users/create', UserPost.as_view(), name = 'user-create'),
-#     path('tickets/create', TicketPost.as_view(), name = 'ticket-create'),
     path('tickets/stats', TicketViewByTime.as_view(), name = 'ticket-stats'),
     path('tickets/search', SearchTicketView.as_view(), name = 'ticket-search'),
     path('export', ExportTicketCSV.as_view(), name='export-tickets'),

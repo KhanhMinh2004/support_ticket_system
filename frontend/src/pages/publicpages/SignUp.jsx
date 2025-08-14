@@ -23,6 +23,8 @@ export default function SignUp() {
     username : "",
     password : "",
     email    : "",
+    first_name: "",
+    last_name : "",
   })
 
   const handleChange = (e) => {
@@ -80,6 +82,47 @@ export default function SignUp() {
             type="email"
             name="email"
             value={formData.email}
+            onChange={handleChange}
+            required
+            fullWidth
+            variant="outlined"
+            size='small'
+            sx={{
+              mt: -1.5,
+              '& .MuiOutlinedInput-root': {
+                borderRadius: 3,
+              },
+            }}
+          />
+          <FormLabel htmlFor="first_name" sx={{ fontFamily: 'sans-serif', mt: 2 }}>
+            Firstname
+          </FormLabel>
+          <TextField
+            id="first_name"
+            type="text"
+            name="first_name"
+            value={formData.first_name}
+            onChange={handleChange}
+            required
+            fullWidth
+            variant="outlined"
+            size='small'
+            sx={{
+              mt: -1.5,
+              '& .MuiOutlinedInput-root': {
+                borderRadius: 3,
+              },
+            }}
+          />
+
+          <FormLabel htmlFor="last_name" sx={{ fontFamily: 'sans-serif', mt: 2 }}>
+            Lastname
+          </FormLabel>
+          <TextField
+            id="last_name"
+            type="text"
+            name="last_name"
+            value={formData.last_name}
             onChange={handleChange}
             required
             fullWidth
