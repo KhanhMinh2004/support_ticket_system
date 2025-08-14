@@ -2,9 +2,7 @@ import * as React from 'react';
 import {
   Box,
   Button,
-  Checkbox,
   CssBaseline,
-  FormControlLabel,
   FormLabel,
   Link,
   TextField,
@@ -15,10 +13,10 @@ import ShieldIcon from '@mui/icons-material/Shield';
 import Card from '../../component/Card.jsx';
 import { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../hooks/useAuth.jsx';
 
 export default function SignIn() {
-  const navigate = useNavigate();
+  const { login } = useAuth()
   const [formData, setFormData] = useState({
     username: '',
     password: '',
@@ -31,20 +29,15 @@ export default function SignIn() {
     })
   }
 
-    const handleLogin = async (e) => {
+   const handleLogin = async (e) => {
         e.preventDefault()
         try {
             const res = await axios.post('http://localhost:8000/api/login', formData)
 
             const {message, user, token} = res.data
-            localStorage.setItem('token', token)
-            const isStaff = user.is_staff
-            localStorage.setItem('is_staff', isStaff)
-            console.log(isStaff)
-            if (isStaff){
-                navigate('/admin')
-            } else navigate('/ticket')
 
+            localStorage.setItem('token', token)
+            login(user)
         } catch (error) {
             console.log(error)
             console.log(error.response?.data?.message || 'Login failed');
