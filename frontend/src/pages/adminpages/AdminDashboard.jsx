@@ -1,5 +1,5 @@
-import React, {useEffect, useMemo, useState} from 'react';
-import {Box, Button, Grid, Pagination, Typography} from "@mui/material";
+import React, { useEffect, useMemo, useState } from 'react';
+import { Box, Button, Grid, Pagination, Typography } from "@mui/material";
 import Title from "../../component/Title";
 import Subtitle from "../../component/Subtitle.jsx";
 import CustomCard from "../../component/CustomCard.jsx";
@@ -14,7 +14,8 @@ import TicketTable from "../../component/TicketTable.jsx";
 import DownloadOutlinedIcon from '@mui/icons-material/DownloadOutlined';
 import axios from "axios";
 import debounce from "lodash.debounce";
-import {useAuth} from "../../hooks/useAuth.jsx";
+import { useAuth } from "../../hooks/useAuth.jsx";
+import Header from '../../component/HeaderAdmin.jsx';
 
 const API_URL = 'http://localhost:8000/api/tickets/';
 const STATUSES = ["Open", "In Progress", "Resolved", "All"];
@@ -23,7 +24,7 @@ const PRIORITIES = ["Low", "Medium", "High", "All"];
 
 
 const AdminDashboard = () => {
-    const {logout} = useAuth();
+    const { logout } = useAuth();
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('All');
     const [selectedPriority, setSelectedPriority] = useState('All');
@@ -114,7 +115,7 @@ const AdminDashboard = () => {
 
     const handleExportTickets = async (e) => {
         e.preventDefault()
-        try{
+        try {
             const res = await axios.get('http://127.0.0.1:8000/api/export', {
                 responseType: 'blob'
             })
@@ -124,12 +125,14 @@ const AdminDashboard = () => {
             link.setAttribute('download', 'tickets.csv')
             document.body.appendChild(link)
             link.click()
-        }catch (error){
+        } catch (error) {
             console.log(error)
         }
-         
+
     }
     return (
+        <div>
+            <Header/>
         <Box width='80vw' mx="auto" sx={{ mt: 5}}>
             {/*logout button*/}
             <Button
@@ -266,6 +269,7 @@ const AdminDashboard = () => {
                 </Box>
             </Box>
         </Box>
+    </div>
     );
 };
 

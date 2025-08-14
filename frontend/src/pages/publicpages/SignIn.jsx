@@ -37,7 +37,8 @@ export default function SignIn() {
             const {message, user, token} = res.data
 
             localStorage.setItem('token', token)
-            login(user)
+            console.log("asdhasj:", token)
+            login(res.data);
         } catch (error) {
             console.log(error)
             console.log(error.response?.data?.message || 'Login failed');

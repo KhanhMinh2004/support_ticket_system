@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.contrib.auth import authenticate
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, permissions, filters, serializers
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import generics
@@ -51,7 +51,7 @@ class RegisterView(generics.CreateAPIView):
         return Response({"message": "User registered successfully"}, status=status.HTTP_201_CREATED)
 
 class TicketListCreateView(generics.ListCreateAPIView):
-    queryset = Ticket.objects.all().order_by('-created_at')
+    queryset = Ticket.objects.all().order_by('id')
     serializer_class = TicketSerializer
 #     permission_classes = [permissions.IsAuthenticated]
     permission_classes = [AllowAny]
@@ -59,16 +59,18 @@ class TicketListCreateView(generics.ListCreateAPIView):
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_fields = ['status', 'priority', 'category']
     search_fields = ['title', 'description']
+    
 
     def perform_create(self, serializer):
         ticket = serializer.save(user=self.request.user)
         emailFE = self.request.data.get('email')
-        print(f"Email to validate: '{emailFE}'")
+        user_data = UserSerializer(self.request.user).data
+        fullname = user_data.get('full_name', 'User')
 
         send_ticket_email.delay(
                 ticket.id,
                 ticket.title,
-                ticket.user.username,
+                fullname,
                 emailFE,
                 ticket.description,
                 ticket.category,
@@ -221,3 +223,10 @@ class ExportTicketCSV(generics.ListAPIView):
 
         response['Content-Disposition'] = 'attachment; filename="ticket.csv"'
         return response
+    
+class MeView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        serializer = UserSerializer(request.user)
+        return Response(serializer.data)

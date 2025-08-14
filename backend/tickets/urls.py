@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import TicketListCreateView, ticket_counts, LoginView, TicketViewByTime, SearchTicketView, ExportTicketCSV, \
-    TicketStatusUpdateView, RegisterView
+    TicketStatusUpdateView, RegisterView, MeView
 
 urlpatterns = [
     path('login', LoginView.as_view(), name = 'login-view'),
@@ -11,5 +11,6 @@ urlpatterns = [
 
     path('tickets/', TicketListCreateView.as_view(), name='ticket-list-create'),
     path('tickets/<int:pk>/status', TicketStatusUpdateView.as_view(), name='ticket-status-update'),
-    path('tickets/counts', ticket_counts, name='ticket-counts')
+    path('tickets/counts', ticket_counts, name='ticket-counts'),
+    path('me/', MeView.as_view(), name='me-view'),
 ]

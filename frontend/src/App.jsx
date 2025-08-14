@@ -12,23 +12,26 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 
 import {AdminRoute, UserRoute} from "./component/ProtectedRoute.jsx";
+import { AuthProvider } from './hooks/useAuth.jsx'
 
 
 function App() {
     return (
-        <Routes>
-            <Route path="/" element={<Navigate to="/signin" replace/>}/>
-            <Route path="/signin" element = { <SignIn/>}/>
-            <Route path="/signup" element = {<SignUp/>}/>
+        <AuthProvider>
+            <Routes>
+                <Route path="/" element={<Navigate to="/signin" replace/>}/>
+                <Route path="/signin" element = { <SignIn/>}/>
+                <Route path="/signup" element = {<SignUp/>}/>
 
-            <Route element={<UserRoute/>}>
+                
                 <Route path="ticket" element={<UserTicketForm/>}/>
-            </Route>
-            <Route element={<AdminRoute/>}>
-                <Route path="admin" element={<AdminDashboard/>}/>
-                <Route path="analyst" element={<Analyst/>}/>
-            </Route>
-        </Routes>
+                
+                <Route element={<AdminRoute/>}>
+                    <Route path="admin" element={<AdminDashboard/>}/>
+                    <Route path="analyst" element={<Analyst/>}/>
+                </Route>
+            </Routes>
+        </AuthProvider>
     )
 }
 export default App

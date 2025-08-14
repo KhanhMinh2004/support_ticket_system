@@ -20,7 +20,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { format } from 'date-fns';
 import axios from 'axios';
-import { da } from 'date-fns/locale';
+import Header from '../../component/HeaderAdmin';
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
@@ -70,33 +70,37 @@ const ChartWithDateFilter = () => {
   };
 
   return (
-    <Box sx={{ maxWidth: 600, margin: 'auto', mt: 4 }}>
-      <Typography variant="h6" sx={{ mb: 2 }}>Thống kê theo thời gian</Typography>
+    <div>
+      <Header />
+    
+      <Box sx={{ maxWidth: 600, margin: 'auto', mt: 4 }}>
+        <Typography variant="h6" sx={{ mb: 2 }}>Thống kê theo thời gian</Typography>
 
-      <LocalizationProvider dateAdapter={AdapterDateFns}>
-        <DatePicker
-          label="Chọn ngày"
-          value={selectedDate}
-          onChange={(newValue) => setselectedDate(newValue)}
-          renderInput={(params) => <TextField fullWidth sx={{ mb: 2 }} {...params} />}
-        />
-      </LocalizationProvider>
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <DatePicker
+            label="Chọn ngày"
+            value={selectedDate}
+            onChange={(newValue) => setselectedDate(newValue)}
+            renderInput={(params) => <TextField fullWidth sx={{ mb: 2 }} {...params} />}
+          />
+        </LocalizationProvider>
 
-      <TextField
-        select
-        fullWidth
-        label="Chế độ thống kê"
-        value={groupBy}
-        onChange={(e) => setGroupBy(e.target.value)}
-        sx={{ mb: 4 }}
-      >
-        <MenuItem value="day">Ngày</MenuItem>
-        <MenuItem value="month">Tháng</MenuItem>
-        <MenuItem value="year">Năm</MenuItem>
-      </TextField>
+        <TextField
+          select
+          fullWidth
+          label="Chế độ thống kê"
+          value={groupBy}
+          onChange={(e) => setGroupBy(e.target.value)}
+          sx={{ mb: 4 }}
+        >
+          <MenuItem value="day">Ngày</MenuItem>
+          <MenuItem value="month">Tháng</MenuItem>
+          <MenuItem value="year">Năm</MenuItem>
+        </TextField>
 
-      <Bar data={data} options={options} />
-    </Box>
+        <Bar data={data} options={options} />
+      </Box>
+    </div>
   );
 };
 

@@ -8,8 +8,8 @@ def send_ticket_email(id, title, username, email, description, category, priorit
     subject = f"New Ticket {title} - Category {category}"
     message = (
         f"Hello {username} , \n\n"
-        f"Your ticket has been created at {create_at} successfully."
-        f"Ticket ID: {id}"
+        f"Your ticket has been created at {create_at} successfully.\n"
+        f"Ticket ID: {id}' '"
         f"Description: {description}\n"
         f"Category: {category}\n"
         f"Priority: {priority}\n"
