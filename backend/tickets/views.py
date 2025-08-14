@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.contrib.auth import authenticate
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import generics, permissions, filters
+from rest_framework import generics, permissions, filters, serializers
 from rest_framework.permissions import AllowAny
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -61,7 +61,22 @@ class TicketListCreateView(generics.ListCreateAPIView):
     search_fields = ['title', 'description']
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+        ticket = serializer.save(user=self.request.user)
+        emailFE = self.request.data.get('email')
+        print(f"Email to validate: '{emailFE}'")
+
+        send_ticket_email.delay(
+                ticket.id,
+                ticket.title,
+                ticket.user.username,
+                emailFE,
+                ticket.description,
+                ticket.category,
+                ticket.priority,
+                ticket.created_at.isoformat(),      
+            )
+        
+            
 
 class TicketStatusUpdateView(generics.UpdateAPIView):
     queryset = Ticket.objects.all()
@@ -94,19 +109,7 @@ def ticket_counts(request):
     }
     return Response(counts)
 
-    def perform_create(self, serializer):
-        ticket = serializer.save()
-
-        send_ticket_email.delay(
-            ticket.id_ticket,
-            ticket.fullname,
-            ticket.email,
-            ticket.description,
-            ticket.issue_type,
-            ticket.urgently_level,
-            ticket.create_at.isoformat(),
-            ticket.user.username if ticket.user else "Anonymous"
-        )
+    
 
 class TicketViewByTime(APIView):
 
