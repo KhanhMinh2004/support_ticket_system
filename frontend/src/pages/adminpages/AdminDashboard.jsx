@@ -11,7 +11,7 @@ import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
 import CustomTextField from "../../component/CustomTextField.jsx";
 import CustomSelect from "../../component/CustomSelect.jsx";
 import TicketTable from "../../component/TicketTable.jsx";
-import {mockTickets} from "../../mock-data/mock.js"
+import DownloadOutlinedIcon from '@mui/icons-material/DownloadOutlined';
 import axios from "axios";
 import debounce from "lodash.debounce";
 
@@ -109,6 +109,24 @@ const AdminDashboard = () => {
         setSearchTerm(value);
         debouncedSearch(value, selectedCategory, selectedPriority, selectedStatus);
     }
+
+    const handleExportTickets = async (e) => {
+        e.preventDefault()
+        try{
+            const res = await axios.get('http://127.0.0.1:8000/api/export', {
+                responseType: 'blob'
+            })
+            const url = window.URL.createObjectURL(new Blob([res.data]))
+            const link = document.createElement('a')
+            link.href = url
+            link.setAttribute('download', 'tickets.csv')
+            document.body.appendChild(link)
+            link.click()
+        }catch (error){
+            console.log(error)
+        }
+         
+    }
     return (
         <Box width='80vw' mx="auto" sx={{ mt: 5}}>
             <Title>
@@ -117,6 +135,9 @@ const AdminDashboard = () => {
             <Subtitle mb={4}>
                 Manage and track all support tickets here
             </Subtitle>
+            <Button sx={{ mb: 3 }}  startIcon={<DownloadOutlinedIcon />} onClick={handleExportTickets}>
+                Export Tickets
+            </Button>
             {/*status section*/}
             <Grid container spacing={1} mb={2}>
                 <Grid size={{xs: 6, sm: 3}}>

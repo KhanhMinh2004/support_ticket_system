@@ -16,10 +16,10 @@ import { useEffect } from 'react'
 
 function PrivateRoute({ children }) {
     const navigate = useNavigate();
-    const role = localStorage.getItem("role")
+    const role = localStorage.getItem("is_staff")
 
     useEffect(() => {
-        if (role !== 'admin'){
+        if (role !== 'true'){
             navigate('/signin')
         }
     }, [role, navigate])
@@ -32,9 +32,9 @@ function App() {
             <Route path="/signin" element = { <SignIn/> }/>
             <Route path="/signup" element = {<SignUp/>}/>
             <Route path="/ticket" element={<UserTicketForm/>}/>
+
+            <Route path="/admin" element={<PrivateRoute> <AdminDashboard/> </PrivateRoute>}/>
             <Route path="/analyst" element={<PrivateRoute> <Analyst/> </PrivateRoute>}/>
-            <Route path="/admin" element={<AdminDashboard/>}/>
-            <Route path="/analyst" element={<Analyst/>}/>
         </Routes>
     )
 }

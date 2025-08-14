@@ -15,8 +15,10 @@ import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
 import Card from '../../component/Card.jsx'; 
 import { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 export default function SignUp() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username : "",
     password : "",
@@ -33,8 +35,9 @@ export default function SignUp() {
   const handleSignup = async (e) => {
     e.preventDefault()
     try {
-      const res = await axios.post('http://localhost:8000/api/users/create', formData)
+      const res = await axios.post('http://localhost:8000/api/register', formData)
       alert(res.data.message )
+      navigate('/signin')
     } catch (error) {
       alert(error.response?.data?.message || 'Register failed')
     }

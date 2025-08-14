@@ -19,6 +19,7 @@ from django.db.models import Q
 from datetime import datetime
 from django.http import HttpResponse
 import csv
+from .serializers import RegisterSerializer
 
 class LoginView(APIView):
     def post(self, request):
@@ -40,17 +41,14 @@ class LoginView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-# class UserPost(generics.CreateAPIView):
-#     queryset = Users.objects.all()
-#     serializer_class = UserSerializer
-#
-#     def create(self, request, *args, **kwargs):
-#         super().create(request, *args, **kwargs)
-#         return Response({"message" : "Registation successful"})
-#
-# class UserView(generics.ListAPIView):
-#     queryset = Users.objects.all()
-#     serializer_class = UserSerializer
+class RegisterView(generics.CreateAPIView):
+    serializer_class = RegisterSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        return Response({"message": "User registered successfully"}, status=status.HTTP_201_CREATED)
 
 class TicketListCreateView(generics.ListCreateAPIView):
     queryset = Ticket.objects.all().order_by('-created_at')
@@ -115,12 +113,12 @@ class TicketViewByTime(APIView):
     def get(self, request, *args, **kwargs):
         group_by = request.query_params.get('group_by', 'day')
         date_filter = request.query_params.get('date', None)
-        queryset = Tickets.objects.all()
+        queryset = Ticket.objects.all()
 
         if group_by == 'month':
-            queryset = queryset.annotate(period=TruncMonth('create_at'))
+            queryset = queryset.annotate(period=TruncMonth('created_at'))
             data = (
-            queryset.values('period').annotate(count=Count('id_ticket')).order_by('period')
+            queryset.values('period').annotate(count=Count('id')).order_by('period')
         )
             results = [
                 {
@@ -131,9 +129,9 @@ class TicketViewByTime(APIView):
             ]
 
         elif group_by == 'year':
-            queryset = queryset.annotate(period=TruncYear('create_at'))
+            queryset = queryset.annotate(period=TruncYear('created_at'))
             data = (
-            queryset.values('period').annotate(count=Count('id_ticket')).order_by('period')
+            queryset.values('period').annotate(count=Count('id')).order_by('period')
         )
             results = [
                 {
@@ -144,14 +142,14 @@ class TicketViewByTime(APIView):
             ]
 
         elif group_by == 'day':
-            queryset = queryset.annotate(period=TruncDay('create_at'))
+            queryset = queryset.annotate(period=TruncDay('created_at'))
             if date_filter:
                 try:
                     date_obj = datetime.strptime(date_filter, '%Y-%m-%d').date()
                     queryset = queryset.filter(period=date_obj)
                 except ValueError:
                     pass
-            data = (queryset.values('period').annotate(count=Count('id_ticket')).order_by('period'))
+            data = (queryset.values('period').annotate(count=Count('id')).order_by('period'))
             results = [
                 {
                     "date": item["period"].strftime("%Y-%m-%d"),
@@ -161,9 +159,9 @@ class TicketViewByTime(APIView):
             ]
 
         else:
-            queryset = queryset.annotate(period=TruncDate('create_at'))
+            queryset = queryset.annotate(period=TruncDate('created_at'))
             data = (
-                queryset.values('period').annotate(count=Count('id_ticket')).order_by('period')
+                queryset.values('period').annotate(count=Count('id')).order_by('period')
             )
             results = [
                 {
@@ -179,7 +177,7 @@ class SearchTicketView(generics.ListAPIView):
     serializer_class = TicketSerializer
 
     def get_queryset(self):
-        queryset = Tickets.objects.all()
+        queryset = Ticket.objects.all()
 
         query = self.request.query_params.get('query')
         if query:
@@ -214,8 +212,8 @@ class ExportTicketCSV(generics.ListAPIView):
         response.write('\ufeff')
 
         writer = csv.writer(response)
-        writer.writerow(['ID', 'Full Name', 'Email', 'Description', 'Issue Type', 'Urgently Level', 'Status', 'Created At'])
-        for ticket in Tickets.objects.all().values_list('id_ticket', 'fullname', 'email', 'description', 'issue_type', 'urgently_level', 'status', 'create_at'):
+        writer.writerow(['ID', 'Title', 'Description', 'Category', 'Priority', 'Status', 'Created At', 'Updated At'])
+        for ticket in Ticket.objects.all().values_list('id', 'title', 'description', 'category', 'priority', 'status', 'created_at', 'updated_at'):
             writer.writerow(ticket)
 
         response['Content-Disposition'] = 'attachment; filename="ticket.csv"'

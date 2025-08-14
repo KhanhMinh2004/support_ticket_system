@@ -39,6 +39,7 @@ export default function SignIn() {
             const {message, user, token} = res.data
             localStorage.setItem('token', token)
             const isStaff = user.is_staff
+            localStorage.setItem('is_staff', isStaff)
             console.log(isStaff)
             if (isStaff){
                 navigate('/admin')

@@ -1,9 +1,10 @@
 from django.urls import path
 from .views import TicketListCreateView, ticket_counts, LoginView, TicketViewByTime, SearchTicketView, ExportTicketCSV, \
-    TicketStatusUpdateView
+    TicketStatusUpdateView, RegisterView
 
 urlpatterns = [
     path('login', LoginView.as_view(), name = 'login-view'),
+    path('register', RegisterView.as_view(), name = 'register-view'),
 #     path('users', UserView.as_view(), name = 'user-view'),
 #     path('users/create', UserPost.as_view(), name = 'user-create'),
 #     path('tickets/create', TicketPost.as_view(), name = 'ticket-create'),
