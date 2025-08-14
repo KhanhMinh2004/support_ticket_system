@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import {Button, Typography, Card, CardContent, Box, Grid} from "@mui/material";
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ConfirmationNumberOutlinedIcon from '@mui/icons-material/ConfirmationNumberOutlined';
@@ -8,6 +8,7 @@ import CircleWrapper from "../../component/CircleWrapper.jsx";
 import CustomTextField from "../../component/CustomTextField.jsx";
 import CustomSelect from "../../component/CustomSelect.jsx";
 import axios from "axios";
+import {useAuth} from "../../hooks/useAuth.jsx";
 
 const CATEGORIES = [
     "Hardware Issues",
@@ -22,11 +23,13 @@ const CATEGORIES = [
 const PRIORITIES = ["Low", "Medium", "High"];
 
 export const UserTicketForm = () => {
+    const {logout, user} = useAuth();
     const [formData, setFormData] = useState({
-        title: "",
-        email: "",
+        name: user.full_name || "",
+        email: user.email || "",
         category: "",
         priority: "",
+        title: "",
         description: ""
     });
     const [isSubmitted, setIsSubmitted] = useState(false);
@@ -36,7 +39,7 @@ export const UserTicketForm = () => {
 
         try{
             const token = localStorage.getItem("token")
-            const res = await axios.post(
+            await axios.post(
                 'http://localhost:8000/api/tickets/',
                 formData, {
                     headers: {
@@ -57,10 +60,11 @@ export const UserTicketForm = () => {
 
     const resetForm = () => {
         setFormData({
-            title: "",
+            name: "",
             email: "",
             category: "",
             priority: "",
+            title: "",
             description: ""
         });
         setIsSubmitted(false);
@@ -89,6 +93,14 @@ export const UserTicketForm = () => {
 
     return (
         <Box p={3} maxWidth={800} mx="auto">
+            <Button
+                variant='outlined'
+                color='error'
+                sx={{borderRadius: '8px', position: 'absolute', top: 20, right: 20}}
+                onClick={logout}
+            >
+                Logout
+            </Button>
             <Box display="flex" flexDirection="column" alignItems="center" mb={2}>
                 <CircleWrapper>
                     <ConfirmationNumberOutlinedIcon color="primary" sx={{ fontSize: 45, my: 1 }} />
@@ -107,9 +119,9 @@ export const UserTicketForm = () => {
                     <Grid container spacing={3}>
                         <Grid size={{xs: 12, sm: 6}}>
                             <CustomTextField
-                                label="Title"
-                                value={formData.title}
-                                onChange={(e) => handleInputChange("title", e.target.value)}
+                                label="Name"
+                                value={formData.name}
+                                disabled
                             />
                         </Grid>
                         <Grid size={{xs: 12, sm: 6}}>
@@ -118,6 +130,7 @@ export const UserTicketForm = () => {
                                 type="email"
                                 value={formData.email}
                                 onChange={(e) => handleInputChange("email", e.target.value)}
+                                disabled
                             />
                         </Grid>
                         <Grid size={{xs: 12, sm: 6}}>
@@ -138,6 +151,13 @@ export const UserTicketForm = () => {
                         </Grid>
                         <Grid size={{xs: 12}}>
                             <CustomTextField
+                                label="Issue Title"
+                                value={formData.title}
+                                onChange={(e) => handleInputChange("title", e.target.value)}
+                            />
+                        </Grid>
+                        <Grid size={{xs: 12}}>
+                            <CustomTextField
                                 label="Issue Description"
                                 multiline
                                 rows={4}
@@ -152,7 +172,7 @@ export const UserTicketForm = () => {
                         color="primary"
                         fullWidth
                         sx={{ mt: 3, borderRadius: "10px" }}
-                        disabled={!formData.title || !formData.email || !formData.category || !formData.priority || !formData.description}
+                        disabled={!formData.name || !formData.email || !formData.category || !formData.priority || !formData.description}
                     >
                         Submit Ticket
                     </Button>
