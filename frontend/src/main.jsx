@@ -5,13 +5,16 @@ import {CssBaseline, ThemeProvider} from "@mui/material";
 import theme from './theme/theme'
 import './index.css'
 import App from './App.jsx'
+import {AuthProvider} from "./hooks/useAuth.jsx";
 
 createRoot(document.getElementById('root')).render(
     <StrictMode>
         <ThemeProvider theme={theme}>
             <CssBaseline/>
             <BrowserRouter>
-                <App/>
+                <AuthProvider>
+                    <App/>
+                </AuthProvider>
             </BrowserRouter>
         </ThemeProvider>
     </StrictMode>,

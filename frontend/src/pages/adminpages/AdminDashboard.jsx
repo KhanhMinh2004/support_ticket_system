@@ -14,6 +14,7 @@ import TicketTable from "../../component/TicketTable.jsx";
 import {mockTickets} from "../../mock-data/mock.js"
 import axios from "axios";
 import debounce from "lodash.debounce";
+import {useAuth} from "../../hooks/useAuth.jsx";
 
 const API_URL = 'http://localhost:8000/api/tickets/';
 const STATUSES = ["Open", "In Progress", "Resolved", "All"];
@@ -22,6 +23,7 @@ const PRIORITIES = ["Low", "Medium", "High", "All"];
 
 
 const AdminDashboard = () => {
+    const {logout} = useAuth();
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('All');
     const [selectedPriority, setSelectedPriority] = useState('All');
@@ -43,7 +45,7 @@ const AdminDashboard = () => {
 
     useEffect(() => {
         fetchCounts()
-    }, []);
+    }, [tickets]);
 
     useEffect(() => {
         fetchTickets(searchTerm, selectedCategory, selectedPriority, selectedStatus, page);
@@ -111,6 +113,15 @@ const AdminDashboard = () => {
     }
     return (
         <Box width='80vw' mx="auto" sx={{ mt: 5}}>
+            {/*logout button*/}
+            <Button
+                variant='outlined'
+                color='error'
+                sx={{borderRadius: '8px', float: 'right'}}
+                onClick={logout}
+            >
+                Logout
+            </Button>
             <Title>
                 IT Support Admin Dashboard
             </Title>
