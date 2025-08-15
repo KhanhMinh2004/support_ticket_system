@@ -10,6 +10,7 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         const token = localStorage.getItem('token');
+        console.log("ádasdyu",token)
         if (token) {
             fetch("http://localhost:8000/api/me/", {
                 headers: {
