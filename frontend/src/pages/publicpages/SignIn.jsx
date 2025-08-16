@@ -1,150 +1,123 @@
-import * as React from 'react';
-import {
-  Box,
-  Button,
-  CssBaseline,
-  FormLabel,
-  Link,
-  TextField,
-  Typography,
-  Stack,
-} from '@mui/material';
-import ShieldIcon from '@mui/icons-material/Shield';
-import Card from '../../component/Card.jsx';
+import {Box, Button, Link, Typography} from '@mui/material';
+import styled from '@mui/system/styled';
+import ShieldRoundedIcon from '@mui/icons-material/ShieldRounded';
 import { useState } from 'react';
-import axios from 'axios';
 import { useAuth } from '../../hooks/useAuth.jsx';
+import CircleWrapper from "../../component/CircleWrapper.jsx";
+import Title from "../../component/Title.jsx";
+import Subtitle from "../../component/Subtitle.jsx";
+import CustomTextField from "../../component/CustomTextField.jsx";
+import '@fontsource/outfit/400.css';
+
+const Wrapper = styled(Box)({
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    width: '600px',
+    border: '0.5px solid rgba(0,0,0,0.3)',
+    borderRadius: 10,
+    padding: 30,
+    backgroundColor: 'secondary.main'
+})
+const CustomLabel = styled(Typography)({
+    textAlign: 'left',
+    fontFamily: 'Outfit',
+    fontSize: '18px',
+    fontWeight: 400,
+})
+const StyledButton = styled(Button)({
+    boxShadow: 'none',
+    backgroundColor: '#1F8FFF',
+    height: '45px',
+    borderRadius: 10,
+    marginTop: '10px',
+    fontFamily: 'Outfit'
+})
+const HelperText = styled(Typography)({
+    fontFamily: 'Outfit',
+    fontWeight: 300,
+    fontSize: '20px',
+    marginTop: '50px'
+})
 
 export default function SignIn() {
-  const { login } = useAuth()
-  const [formData, setFormData] = useState({
-    username: '',
-    password: '',
-  })
-  
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name] : e.target.value,
+    const { login, error } = useAuth()
+    const [formData, setFormData] = useState({
+        username: '',
+        password: '',
     })
-  }
+  
+    const handleChange = (e) => {
+        setFormData({
+            ...formData,
+            [e.target.name] : e.target.value,
+        })
+    }
 
     const handleLogin = (e) => {
         e.preventDefault()
         login(formData)
-        // try {
-        //     const res = await axios.post(`${API_URL}/login`, formData)
-        //
-        //     const {message, user, token} = res.data
-        //
-        //     localStorage.setItem('token', token)
-        //     console.log("asdhasj:", token)
-        //     login(res.data);
-        // } catch (error) {
-        //     console.log(error)
-        //     console.log(error.response?.data?.message || 'Login failed');
-        // }
     }
 
-  return (
-    <>
-      <CssBaseline />
-      <Stack
-        direction="column"
-        justifyContent="center"
-        sx={{
-          minHeight: '100vh',
-          padding: 2,
-          position: 'relative',
-          backgroundColor: '#f7f9fc',
-        }}
-      >
-        <Card>
-          {/* Fake Logo/Icon */}
-          <Box
-            sx={{
-              width: 48,
-              height: 48,
-              backgroundColor: '#e6f0fa',
-              borderRadius: '50%',
-              margin: 'auto',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              mb: 1,
-            }}
-          >
-            <ShieldIcon fontSize='large'/>
-          </Box>
-
-          <Typography
-            component="h1"
-            variant="h5"
-            sx={{
-              textAlign: 'center',
-              fontWeight: 700,
-              mt: 1,
-            }}
-          >
-            Welcome back!
-          </Typography>
-
-          <Typography sx={{ textAlign: 'center', color: 'text.secondary' }}>
-            Sign in to access to your account.
-          </Typography>
-
-          <FormLabel htmlFor="username" sx={{ mt: 2, fontFamily: 'cursive' }}>Username</FormLabel>
-          <TextField
-            id="username"
-            type="text"
-            name="username"
-            value={formData.username}
-            onChange={handleChange}
-            required
-            fullWidth
-            variant="outlined"
-            sx={{
-              mt: -1.5,
-              '& .MuiOutlinedInput-root': {
-                borderRadius: 3,
-              }
-            }}
-          />
-
-          <FormLabel htmlFor="password" sx={{ mt: 2, fontFamily: 'cursive' }} >Password</FormLabel>
-          <TextField
-            id="password"
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-            fullWidth
-            variant="outlined"
-            sx={{
-              mt: -1.5,
-              '& .MuiOutlinedInput-root':{
-                borderRadius: 3,
-              }
-            }}
-          />
-
-          <Button type="submit" 
-          fullWidth variant="contained"  
-          sx={{ mt: 3 }} 
-          onClick={handleLogin}
-          >
-            Login
-          </Button>
-
-          <Typography sx={{ textAlign: 'center', fontSize: '0.9rem', mt: 2 }}>
-            Don’t have an account?{' '}
-            <Link href="/signup" underline="hover">
-              Register here.
-            </Link>
-          </Typography>
-        </Card>
-      </Stack>
-    </>
-  );
+    return (
+        <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh'}}>
+            <Wrapper>
+                <CircleWrapper size={75}>
+                    <ShieldRoundedIcon sx={{fontSize: '45px'}}/>
+                </CircleWrapper>
+                <Title my={2}>
+                    Welcome back!
+                </Title>
+                <Subtitle mb={3}>
+                    Sign in to access your account.
+                </Subtitle>
+                <Box component='form' sx={{width:'100%'}}>
+                    <CustomLabel gutterBottom>
+                        Username
+                    </CustomLabel>
+                    <CustomTextField
+                        value={formData.username}
+                        name="username"
+                        sx={{backgroundColor: '#fafafa', mb: 4}}
+                        onChange={handleChange}
+                    />
+                    <CustomLabel gutterBottom>
+                        Password
+                    </CustomLabel>
+                    <CustomTextField
+                        type="password"
+                        value={formData.password}
+                        name="password"
+                        sx={{backgroundColor: '#fafafa', mb: 4}}
+                        onChange={handleChange}
+                    />
+                    {error && (
+                        <Typography variant="body2" color="error" sx={{ mb: 2 }}>
+                            {error}
+                        </Typography>
+                    )}
+                    <StyledButton
+                        type="submit"
+                        variant="contained"
+                        color="primary"
+                        fullWidth
+                        onClick={handleLogin}
+                        sx={{
+                            boxShadow: 'none',
+                        }}
+                        disabled={!formData.username || !formData.password}
+                    >
+                        Login
+                    </StyledButton>
+                </Box>
+                <HelperText>
+                    Don't have an account? Register{' '}
+                    <Link href="/signup" underline="hover">
+                         here
+                    </Link>
+                    {'.'}
+                </HelperText>
+            </Wrapper>
+        </Box>
+    );
 }
