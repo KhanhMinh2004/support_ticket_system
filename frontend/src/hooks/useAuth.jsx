@@ -55,7 +55,7 @@ export const AuthProvider = ({ children }) => {
         } catch (error) {
             console.error("Login error:", error);
             localStorage.removeItem('token');
-            setError(error.message)
+            setError(error.response?.data?.message)
             setToken("")
             setUser(null)
         }

@@ -30,7 +30,7 @@ const StyledButton = styled(Button)({
     backgroundColor: '#1F8FFF',
     height: '45px',
     borderRadius: 10,
-    marginTop: '10px',
+    marginTop: '15px',
     fontFamily: 'Outfit'
 })
 const HelperText = styled(Typography)({
@@ -38,6 +38,13 @@ const HelperText = styled(Typography)({
     fontWeight: 300,
     fontSize: '20px',
     marginTop: '50px'
+})
+const ErrorText = styled(Typography)({
+    fontFamily: 'Outfit',
+    fontWeight: 300,
+    fontSize: '18px',
+    textAlign: 'center',
+    minHeight: '30px',
 })
 
 export default function SignIn() {
@@ -88,14 +95,12 @@ export default function SignIn() {
                         type="password"
                         value={formData.password}
                         name="password"
-                        sx={{backgroundColor: '#fafafa', mb: 4}}
+                        sx={{backgroundColor: '#fafafa', mb: 2}}
                         onChange={handleChange}
                     />
-                    {error && (
-                        <Typography variant="body2" color="error" sx={{ mb: 2 }}>
-                            {error}
-                        </Typography>
-                    )}
+                    <ErrorText color='error'>
+                        {error || ""}
+                    </ErrorText>
                     <StyledButton
                         type="submit"
                         variant="contained"
