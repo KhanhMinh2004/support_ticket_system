@@ -1,22 +1,19 @@
 import React from 'react';
 import {
-  Box,
   Button,
-  Checkbox,
   CssBaseline,
-  FormControlLabel,
   FormLabel,
   Link,
   TextField,
   Typography,
   Stack,
 } from '@mui/material';
-import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
 import Card from '../../component/Card.jsx'; 
 import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
+const API_URL = import.meta.env.VITE_API_URL
 export default function SignUp() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -37,7 +34,7 @@ export default function SignUp() {
   const handleSignup = async (e) => {
     e.preventDefault()
     try {
-      const res = await axios.post('http://localhost:8000/api/register', formData)
+      const res = await axios.post(`${API_URL}/register`, formData)
       alert(res.data.message )
       navigate('/signin')
     } catch (error) {

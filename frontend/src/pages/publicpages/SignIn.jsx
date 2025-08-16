@@ -29,20 +29,21 @@ export default function SignIn() {
     })
   }
 
-   const handleLogin = async (e) => {
+    const handleLogin = (e) => {
         e.preventDefault()
-        try {
-            const res = await axios.post('http://localhost:8000/api/login', formData)
-
-            const {message, user, token} = res.data
-
-            localStorage.setItem('token', token)
-            console.log("asdhasj:", token)
-            login(res.data);
-        } catch (error) {
-            console.log(error)
-            console.log(error.response?.data?.message || 'Login failed');
-        }
+        login(formData)
+        // try {
+        //     const res = await axios.post(`${API_URL}/login`, formData)
+        //
+        //     const {message, user, token} = res.data
+        //
+        //     localStorage.setItem('token', token)
+        //     console.log("asdhasj:", token)
+        //     login(res.data);
+        // } catch (error) {
+        //     console.log(error)
+        //     console.log(error.response?.data?.message || 'Login failed');
+        // }
     }
 
   return (

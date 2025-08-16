@@ -24,6 +24,8 @@ import Header from '../../component/HeaderAdmin';
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const ChartWithDateFilter = () => {
   const [selectedDate, setselectedDate] = useState(new Date());
   const [groupBy, setGroupBy] = useState("day");
@@ -39,7 +41,7 @@ const ChartWithDateFilter = () => {
     }
 
   useEffect(() => {
-    axios.get(`http://localhost:8000/api/tickets/stats?group_by=${groupBy}&date=${dateParam}`)
+    axios.get(`${API_URL}/tickets/stats?group_by=${groupBy}&date=${dateParam}`)
     .then((res) =>{
       setChartData(res.data)
     })
