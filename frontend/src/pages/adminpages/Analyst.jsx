@@ -76,12 +76,13 @@ const ChartWithDateFilter = () => {
       <Box sx={{ maxWidth: 600, margin: 'auto', mt: 4 }}>
         <Typography variant="h6" sx={{ mb: 2 }}>Thống kê theo thời gian</Typography>
 
-        <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <LocalizationProvider dateAdapter={AdapterDateFns} >
           <DatePicker
             label="Chọn ngày"
             value={selectedDate}
             onChange={(newValue) => setselectedDate(newValue)}
             renderInput={(params) => <TextField fullWidth sx={{ mb: 2 }} {...params} />}
+            sx={{ mb: 4 }}
           />
         </LocalizationProvider>
 
