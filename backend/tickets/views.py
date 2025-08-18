@@ -1,3 +1,4 @@
+from celery.result import AsyncResult
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.contrib.auth import authenticate
@@ -12,14 +13,14 @@ from .serializers import UserSerializer, TicketSerializer
 from .models import Ticket
 from rest_framework.views import APIView
 from rest_framework import status
-from .tasks import send_ticket_email
+from .tasks import send_ticket_email, export_ticket_csv
 from django.db.models.functions import TruncDate, TruncMonth, TruncYear, TruncDay
 from django.db.models import Count
 from django.db.models import Q
 from datetime import datetime
 from django.http import HttpResponse
-import csv
 from .serializers import RegisterSerializer
+
 
 class LoginView(APIView):
     def post(self, request):
@@ -209,18 +210,12 @@ class SearchTicketView(generics.ListAPIView):
 
         return queryset
 
-class ExportTicketCSV(generics.ListAPIView):
-    serializer_class = TicketSerializer
+class ExportTicketCSV(APIView):
+    def get(self, request):
+        result = export_ticket_csv.delay()
+        csv_data = result.get(timeout=30)  # timeout 30 giây
 
-    def get(self, request, *args, **kwargs):
-        response = HttpResponse(content_type='text/csv; charset=utf-8')
-        response.write('\ufeff')
-
-        writer = csv.writer(response)
-        writer.writerow(['ID', 'Title', 'Description', 'Category', 'Priority', 'Status', 'Created At', 'Updated At'])
-        for ticket in Ticket.objects.all().values_list('id', 'title', 'description', 'category', 'priority', 'status', 'created_at', 'updated_at'):
-            writer.writerow(ticket)
-
+        response = HttpResponse(csv_data, content_type='text/csv; charset=utf-8')
         response['Content-Disposition'] = 'attachment; filename="ticket.csv"'
         return response
     

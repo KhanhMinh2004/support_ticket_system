@@ -16,12 +16,14 @@ import { useNavigate } from 'react-router-dom';
 const API_URL = import.meta.env.VITE_API_URL
 export default function SignUp() {
   const navigate = useNavigate();
+  const [error, setError] = useState("");
   const [formData, setFormData] = useState({
     username : "",
     password : "",
     email    : "",
     first_name: "",
     last_name : "",
+    confirm_password: ""
   })
 
   const handleChange = (e) => {
@@ -33,8 +35,19 @@ export default function SignUp() {
 
   const handleSignup = async (e) => {
     e.preventDefault()
+    if (formData.password !== formData.confirm_password) {
+      setError('Passwords do not match');
+      return;
+    }
+
     try {
-      const res = await axios.post(`${API_URL}/register`, formData)
+      const res = await axios.post(`${API_URL}/register`, {
+        username: formData.username,
+        password: formData.password,
+        email: formData.email,
+        last_name: formData.last_name,
+        first_name: formData.first_name,
+      })
       alert(res.data.message )
       navigate('/signin')
     } catch (error) {
@@ -175,13 +188,15 @@ export default function SignUp() {
             }}
           />
 
-          <FormLabel htmlFor="confirm-password" sx={{ fontFamily: 'sans-serif', mt: 2 }}>
+          <FormLabel htmlFor="confirm_password" sx={{ fontFamily: 'sans-serif', mt: 2 }}>
             Confirm Password
           </FormLabel>
           <TextField
-            id="confirm-password"
+            id="confirm_password"
             type="password"
-            name="confirm-password"
+            name="confirm_password"
+            value={formData.confirm_password}
+            onChange={handleChange}
             required
             fullWidth
             variant="outlined"
@@ -197,6 +212,12 @@ export default function SignUp() {
           <Button type="submit" fullWidth variant="contained" sx={{ mt: 3 }} onClick={handleSignup}>
             Sign up
           </Button>
+
+          {error && (
+            <Typography sx={{ color: 'red', textAlign: 'center', fontSize: '0.9rem', mt: 2 }}>
+              {error}
+            </Typography>
+          )}
 
           <Typography sx={{ textAlign: 'center', fontSize: '0.9rem', mt: 2 }}>
             Already have an account?{' '}
