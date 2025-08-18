@@ -83,7 +83,15 @@ const TicketTable = ({ tickets, onTicketUpdate}) => {
                             <TableCell>
                                 <Chip label={ticket.status} color={getStatusColor(ticket.status)} />
                             </TableCell>
-                            <TableCell>{ticket.created_at}</TableCell>
+                            <TableCell>
+                                {new Date(ticket.created_at).toLocaleString('vi-VN', {
+                                    day: '2-digit',
+                                    month: '2-digit',
+                                    year: 'numeric',
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                })}
+                            </TableCell>
                             <TableCell>
                                 <IconButton onClick={() => handleView(ticket)} size="small">
                                     <VisibilityIcon />
