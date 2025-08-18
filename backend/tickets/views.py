@@ -52,7 +52,7 @@ class RegisterView(generics.CreateAPIView):
         return Response({"message": "User registered successfully"}, status=status.HTTP_201_CREATED)
 
 class TicketListCreateView(generics.ListCreateAPIView):
-    queryset = Ticket.objects.all().order_by('id')
+    queryset = Ticket.objects.all().order_by('created_at')
     serializer_class = TicketSerializer
 #     permission_classes = [permissions.IsAuthenticated]
     permission_classes = [AllowAny]
@@ -213,7 +213,7 @@ class SearchTicketView(generics.ListAPIView):
 class ExportTicketCSV(APIView):
     def get(self, request):
         result = export_ticket_csv.delay()
-        csv_data = result.get(timeout=30)  # timeout 30 giây
+        csv_data = result.get()
 
         response = HttpResponse(csv_data, content_type='text/csv; charset=utf-8')
         response['Content-Disposition'] = 'attachment; filename="ticket.csv"'

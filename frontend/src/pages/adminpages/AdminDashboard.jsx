@@ -132,144 +132,148 @@ const AdminDashboard = () => {
     }
     return (
         <div>
-            <Header/>
-        <Box width='80vw' mx="auto" sx={{ mt: 5}}>
-            {/*logout button*/}
-            <Button
-                variant='outlined'
-                color='error'
-                sx={{borderRadius: '8px', float: 'right'}}
-                onClick={logout}
-            >
-                Logout
-            </Button>
-            <Title>
-                IT Support Admin Dashboard
-            </Title>
-            <Subtitle mb={4}>
-                Manage and track all support tickets here
-            </Subtitle>
-            <Button sx={{ mb: 3 }}  startIcon={<DownloadOutlinedIcon />} onClick={handleExportTickets}>
-                Export Tickets
-            </Button>
-            {/*status section*/}
-            <Grid container spacing={1} mb={2}>
-                <Grid size={{xs: 6, sm: 3}}>
-                    <CustomCard
-                        label="Total Tickets"
-                        number={counts.total}
-                        icon={<PersonOutlineOutlinedIcon color="primary" sx={{ fontSize: 50}}/>}
-                    />
+            <Header />
+            <Box width='80vw' mx="auto" sx={{ mt: 5 }}>
+                {/*logout button*/}
+                <Button
+                    variant='outlined'
+                    color='error'
+                    sx={{ borderRadius: '8px', float: 'right' }}
+                    onClick={logout}
+                >
+                    Logout
+                </Button>
+                <Title>
+                    IT Support Admin Dashboard
+                </Title>
+                <Subtitle mb={4}>
+                    Manage and track all support tickets here
+                </Subtitle>
+                <Button 
+                    sx={{ mb: 3 }}
+                    startIcon={<DownloadOutlinedIcon />}
+                    onClick={handleExportTickets}
+                >
+                    Export Tickets
+                </Button>
+                {/*status section*/}
+                <Grid container spacing={1} mb={2}>
+                    <Grid size={{ xs: 6, sm: 3 }}>
+                        <CustomCard
+                            label="Total Tickets"
+                            number={counts.total}
+                            icon={<PersonOutlineOutlinedIcon color="primary" sx={{ fontSize: 50 }} />}
+                        />
+                    </Grid>
+                    <Grid size={{ xs: 6, sm: 3 }}>
+                        <CustomCard
+                            label="Open Tickets"
+                            number={counts.open}
+                            icon={<WarningAmberRoundedIcon color="error" sx={{ fontSize: 50 }} />}
+                        />
+                    </Grid>
+                    <Grid size={{ xs: 6, sm: 3 }}>
+                        <CustomCard
+                            label="In Progress"
+                            number={counts.in_progress}
+                            icon={<AccessTimeRoundedIcon color="warning" sx={{ fontSize: 50 }} />}
+                        />
+                    </Grid>
+                    <Grid size={{ xs: 6, sm: 3 }}>
+                        <CustomCard
+                            label="Resolved"
+                            number={counts.resolved}
+                            icon={<TaskAltRoundedIcon color="success" sx={{ fontSize: 50 }} />}
+                        />
+                    </Grid>
                 </Grid>
-                <Grid size={{xs: 6, sm: 3}}>
-                    <CustomCard
-                        label="Open Tickets"
-                        number={counts.open}
-                        icon={<WarningAmberRoundedIcon color="error" sx={{ fontSize: 50}}/>}
-                    />
-                </Grid>
-                <Grid size={{xs: 6, sm: 3}}>
-                    <CustomCard
-                        label="In Progress"
-                        number={counts.in_progress}
-                        icon={<AccessTimeRoundedIcon color="warning" sx={{ fontSize: 50}}/>}
-                    />
-                </Grid>
-                <Grid size={{xs: 6, sm: 3}}>
-                    <CustomCard
-                        label="Resolved"
-                        number={counts.resolved}
-                        icon={<TaskAltRoundedIcon color="success" sx={{ fontSize: 50}}/>}
-                    />
-                </Grid>
-            </Grid>
-            {/*filter section*/}
-            <Box bgcolor='secondary.main' sx={{border: '0.5px solid rgba(0,0,0,0.5)', borderRadius: 2, p: 2, mb: 2}}>
-                <Box sx={{display: 'flex', alignItems:'center', mb: 2}}>
-                    <FilterAltOutlinedIcon sx={{fontSize: 25, mr: 1}}/>
-                    <Typography sx={{fontWeight: 500, fontSize: '20px'}}>
-                        Filter & Search
+                {/*filter section*/}
+                <Box bgcolor='secondary.main' sx={{ border: '0.5px solid rgba(0,0,0,0.5)', borderRadius: 2, p: 2, mb: 2 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                        <FilterAltOutlinedIcon sx={{ fontSize: 25, mr: 1 }} />
+                        <Typography sx={{ fontWeight: 500, fontSize: '20px' }}>
+                            Filter & Search
+                        </Typography>
+                    </Box>
+                    <Grid container spacing={1}>
+                        <Grid size={{ xs: 6, sm: 2 }}>
+                            <CustomTextField
+                                label="Search"
+                                required={false}
+                                fontSize='13px'
+                                value={searchTerm}
+                                onChange={handleSearchChange}
+                            />
+                        </Grid>
+                        <Grid size={{ xs: 6, sm: 2 }}>
+                            <CustomSelect
+                                label="Category"
+                                option={CATEGORIES}
+                                value={selectedCategory}
+                                required={false}
+                                onChange={(e) => setSelectedCategory(e.target.value)}
+                            />
+                        </Grid>
+                        <Grid size={{ xs: 6, sm: 2 }}>
+                            <CustomSelect
+                                label="Priority"
+                                value={selectedPriority}
+                                option={PRIORITIES}
+                                required={false}
+                                onChange={(e) => setSelectedPriority(e.target.value)}
+                            />
+                        </Grid>
+                        <Grid size={{ xs: 6, sm: 2 }}>
+                            <CustomSelect
+                                label="Status"
+                                value={selectedStatus}
+                                option={STATUSES}
+                                required={false}
+                                onChange={(e) => setSelectedStatus(e.target.value)}
+                            />
+                        </Grid>
+                        <Grid size={{ xs: 12, sm: 2 }}>
+                            <Button
+                                fullWidth
+                                variant='outlined'
+                                sx={{ borderRadius: '10px', height: '50px' }}
+                                color='error'
+                                onClick={handleClearFilters}
+                            >
+                                Clear filters
+                            </Button>
+                        </Grid>
+                        <Grid size={{ xs: 12, sm: 2 }}>
+                            <Button
+                                fullWidth
+                                variant='outlined'
+                                sx={{ borderRadius: '10px', height: '50px' }}
+                                color='primary'
+                                onClick={handleApplyFilters}
+                            >
+                                Apply Filters
+                            </Button>
+                        </Grid>
+                    </Grid>
+                </Box>
+                {/*tickets section*/}
+                <Box bgcolor='secondary.main' sx={{ border: '0.5px solid rgba(0,0,0,0.5)', borderRadius: 2, p: 2, mb: 2 }}>
+                    <Typography sx={{ fontWeight: 500, fontSize: '20px' }}>
+                        Support Tickets
                     </Typography>
-                </Box>
-                <Grid container spacing={1}>
-                    <Grid size={{xs: 6, sm: 2}}>
-                        <CustomTextField
-                            label="Search"
-                            required={false}
-                            fontSize='13px'
-                            value={searchTerm}
-                            onChange={handleSearchChange}
+                    <TicketTable tickets={tickets} onTicketUpdate={handleTicketUpdate} />
+                    <Box display="flex" justifyContent="center" mt={2}>
+                        <Pagination
+                            count={Math.ceil(totalTickets / rowsPerPage)}
+                            page={page}
+                            onChange={(e, value) => setPage(value)}
+                            color="primary"
+                            shape="rounded"
                         />
-                    </Grid>
-                    <Grid size={{xs: 6, sm: 2}}>
-                        <CustomSelect
-                            label="Category"
-                            option={CATEGORIES}
-                            value={selectedCategory}
-                            required={false}
-                            onChange={(e) => setSelectedCategory(e.target.value)}
-                        />
-                    </Grid>
-                    <Grid size={{xs: 6, sm: 2}}>
-                        <CustomSelect
-                            label="Priority"
-                            value={selectedPriority}
-                            option={PRIORITIES}
-                            required={false}
-                            onChange={(e) => setSelectedPriority(e.target.value)}
-                        />
-                    </Grid>
-                    <Grid size={{xs: 6, sm: 2}}>
-                        <CustomSelect
-                            label="Status"
-                            value={selectedStatus}
-                            option={STATUSES}
-                            required={false}
-                            onChange={(e) => setSelectedStatus(e.target.value)}
-                        />
-                    </Grid>
-                    <Grid size={{xs: 12, sm: 2}}>
-                        <Button
-                            fullWidth
-                            variant='outlined'
-                            sx={{borderRadius: '10px', height: '50px'}}
-                            color='error'
-                            onClick={handleClearFilters}
-                        >
-                            Clear filters
-                        </Button>
-                    </Grid>
-                    <Grid size={{xs: 12, sm: 2}}>
-                        <Button
-                            fullWidth
-                            variant='outlined'
-                            sx={{borderRadius: '10px', height: '50px'}}
-                            color='primary'
-                            onClick={handleApplyFilters}
-                        >
-                            Apply Filters
-                        </Button>
-                    </Grid>
-                </Grid>
-            </Box>
-            {/*tickets section*/}
-            <Box bgcolor='secondary.main' sx={{border: '0.5px solid rgba(0,0,0,0.5)', borderRadius: 2, p: 2, mb: 2}}>
-                <Typography sx={{fontWeight: 500, fontSize: '20px'}}>
-                    Support Tickets
-                </Typography>
-                <TicketTable tickets={tickets} onTicketUpdate={handleTicketUpdate}/>
-                <Box display="flex" justifyContent="center" mt={2}>
-                    <Pagination
-                        count={Math.ceil(totalTickets / rowsPerPage)}
-                        page={page}
-                        onChange={(e, value) => setPage(value)}
-                        color="primary"
-                        shape="rounded"
-                    />
+                    </Box>
                 </Box>
             </Box>
-        </Box>
-    </div>
+        </div>
     );
 };
 
