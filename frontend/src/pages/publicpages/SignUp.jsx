@@ -1,22 +1,19 @@
 import React from 'react';
 import {
-  Box,
   Button,
-  Checkbox,
   CssBaseline,
-  FormControlLabel,
   FormLabel,
   Link,
   TextField,
   Typography,
   Stack,
 } from '@mui/material';
-import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
 import Card from '../../component/Card.jsx'; 
 import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
+const API_URL = import.meta.env.VITE_API_URL
 export default function SignUp() {
   const navigate = useNavigate();
   const [error, setError] = useState("");
@@ -42,9 +39,9 @@ export default function SignUp() {
       setError('Passwords do not match');
       return;
     }
-   
+
     try {
-      const res = await axios.post('http://localhost:8000/api/register', {
+      const res = await axios.post(`${API_URL}/register`, {
         username: formData.username,
         password: formData.password,
         email: formData.email,

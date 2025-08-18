@@ -22,7 +22,8 @@ import {getStatusColor} from "../utils/statusColor.js";
 import {getPriorityColor} from "../utils/priorityColor.js";
 import axios from "axios";
 
-const STATUSES = ['Open', 'In Progress', 'Resolved'];
+const API_URL = import.meta.env.VITE_API_URL
+const STATUSES = ['Open', 'In Progress', 'Resolved']
 
 const TicketTable = ({ tickets, onTicketUpdate}) => {
     const [selectedTicket, setSelectedTicket] = useState(null);
@@ -40,7 +41,7 @@ const TicketTable = ({ tickets, onTicketUpdate}) => {
 
     const handleSave = async () => {
         try {
-            await axios.patch('http://localhost:8000/api/tickets/' + selectedTicket.id + '/status', {
+            await axios.patch(`${API_URL}/tickets/` + selectedTicket.id + '/status', {
                 status: selectedTicket.status,
             })
             onTicketUpdate({ ...selectedTicket, status: selectedTicket.status });
