@@ -1,6 +1,6 @@
 import {Box} from "@mui/material"
 
-const CircleWrapper = ({children, size = 80, bgColor = '#E8F3FF'}) => {
+const CircleWrapper = ({children, size = 80, bgColor = 'rgba(232,243,255,0.8)'}) => {
     return (
         <Box
             sx={{
@@ -8,7 +8,6 @@ const CircleWrapper = ({children, size = 80, bgColor = '#E8F3FF'}) => {
                 height: size,
                 borderRadius: '50%',
                 backgroundColor: bgColor,
-                opacity: 0.8,
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',

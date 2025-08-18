@@ -39,7 +39,7 @@ class LoginView(APIView):
         else:
             return Response(
                 {"message": "Invalid username or password"},
-                status=status.HTTP_400_BAD_REQUEST
+                status=status.HTTP_401_UNAUTHORIZED
             )
 
 class RegisterView(generics.CreateAPIView):

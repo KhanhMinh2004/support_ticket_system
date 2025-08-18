@@ -10,6 +10,8 @@ import CustomSelect from "../../component/CustomSelect.jsx";
 import axios from "axios";
 import {useAuth} from "../../hooks/useAuth.jsx";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const CATEGORIES = [
     "Hardware Issues",
     "Software Problems",
@@ -40,7 +42,7 @@ export const UserTicketForm = () => {
         try{
             const token = localStorage.getItem("token")
             await axios.post(
-                'http://localhost:8000/api/tickets/',
+                `${API_URL}/tickets/`,
                 formData, {
                     headers: {
                         Authorization: `Token ${token}`,

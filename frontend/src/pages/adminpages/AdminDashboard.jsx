@@ -17,7 +17,7 @@ import debounce from "lodash.debounce";
 import { useAuth } from "../../hooks/useAuth.jsx";
 import Header from '../../component/HeaderAdmin.jsx';
 
-const API_URL = 'http://localhost:8000/api/tickets/';
+const API_URL = import.meta.env.VITE_API_URL;
 const STATUSES = ["Open", "In Progress", "Resolved", "All"];
 const CATEGORIES = ["Hardware Issues", "Software Problems", "Network Connectivity", "Email & Communication", "Account Access", "Security & Permissions", "All"];
 const PRIORITIES = ["Low", "Medium", "High", "All"];
@@ -74,7 +74,7 @@ const AdminDashboard = () => {
 
     const fetchCounts = async () => {
         try {
-            const res = await axios.get(API_URL + 'counts');
+            const res = await axios.get(API_URL + '/tickets/counts');
             setCounts(res.data);
         } catch (error) {
             console.error("Error fetching ticket counts:", error);
@@ -83,7 +83,7 @@ const AdminDashboard = () => {
 
     const fetchTickets = async (term, category, priority, status, pageNumber) => {
         try {
-            const res = await axios.get(API_URL, {
+            const res = await axios.get(`${API_URL}/tickets/`, {
                 params: {
                     search: term,
                     category: category !== 'All' ? category : undefined,
@@ -116,7 +116,7 @@ const AdminDashboard = () => {
     const handleExportTickets = async (e) => {
         e.preventDefault()
         try {
-            const res = await axios.get('http://127.0.0.1:8000/api/export', {
+            const res = await axios.get(`${API_URL}/export`, {
                 responseType: 'blob'
             })
             const url = window.URL.createObjectURL(new Blob([res.data]))
