@@ -8,6 +8,7 @@ import './index.css'
 import App from './App.jsx'
 import { AuthProvider } from "./hooks/useAuth.jsx";
 import store from './store/store'
+import { GoogleOAuthProvider } from '@react-oauth/google'
 
 createRoot(document.getElementById('root')).render(
     <StrictMode>
@@ -15,9 +16,11 @@ createRoot(document.getElementById('root')).render(
             <ThemeProvider theme={theme}>
                 <CssBaseline />
                 <BrowserRouter>
-                    <AuthProvider>
-                        <App />
-                    </AuthProvider>
+                    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+                        <AuthProvider>
+                            <App />
+                        </AuthProvider>
+                    </GoogleOAuthProvider>
                 </BrowserRouter>
             </ThemeProvider>
         </Provider>

@@ -6,7 +6,8 @@ from .models import Ticket
 import csv
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
-import uuid
+from .filters import filter_tickets
+
 
 @shared_task
 def send_ticket_email(id, title, username, email, description, category, priority, create_at ):
@@ -32,12 +33,12 @@ def send_ticket_email(id, title, username, email, description, category, priorit
     return f"Email sent to {email} for ticket {id}"
 
 @shared_task
-def export_ticket_csv():
+def export_ticket_csv(rows):
     output = StringIO()
-
     writer = csv.writer(output)
     writer.writerow(['ID', 'Title', 'Description', 'Category', 'Priority', 'Status', 'Created At', 'Updated At'])
-    for ticket in Ticket.objects.all().values_list('id', 'title', 'description', 'category', 'priority', 'status', 'created_at', 'updated_at'):
+
+    for ticket in rows:
         writer.writerow(ticket)
 
     csv_data = '\ufeff' + output.getvalue()

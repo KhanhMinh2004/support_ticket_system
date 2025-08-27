@@ -25,6 +25,7 @@ const CATEGORIES = [
 const PRIORITIES = ["Low", "Medium", "High"];
 
 export const UserTicketForm = () => {
+    const token = localStorage.getItem('token')
     const {logout, user} = useAuth();
     const [formData, setFormData] = useState({
         name: user.full_name || "",
@@ -40,12 +41,11 @@ export const UserTicketForm = () => {
         e.preventDefault();
 
         try{
-            const token = localStorage.getItem("token")
             await axios.post(
                 `${API_URL}/tickets/`,
                 formData, {
                     headers: {
-                        Authorization: `Token ${token}`,
+                        Authorization: `Bearer ${token}`,
                         'Content-Type': 'application/json'
                     }
                 })
@@ -174,7 +174,7 @@ export const UserTicketForm = () => {
                         color="primary"
                         fullWidth
                         sx={{ mt: 3, borderRadius: "10px" }}
-                        disabled={!formData.name || !formData.email || !formData.category || !formData.priority || !formData.description}
+                        disabled={ !formData.email || !formData.category || !formData.priority || !formData.description}
                     >
                         Submit Ticket
                     </Button>

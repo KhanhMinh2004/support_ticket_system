@@ -18,7 +18,7 @@ import {
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { format } from 'date-fns';
+import { format, parsers } from 'date-fns';
 import axios from 'axios';
 import Header from '../../component/HeaderAdmin';
 
@@ -27,6 +27,7 @@ ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 const API_URL = import.meta.env.VITE_API_URL;
 
 const ChartWithDateFilter = () => {
+  const token = localStorage.getItem('token');
   const [selectedDate, setselectedDate] = useState(new Date());
   const [groupBy, setGroupBy] = useState("day");
   const [chartData, setChartData] = useState([]);
@@ -41,7 +42,11 @@ const ChartWithDateFilter = () => {
     }
 
   useEffect(() => {
-    axios.get(`${API_URL}/tickets/stats?group_by=${groupBy}&date=${dateParam}`)
+    axios.get(`${API_URL}/tickets/stats?group_by=${groupBy}&date=${dateParam}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
     .then((res) =>{
       setChartData(res.data)
     })
@@ -81,6 +86,7 @@ const ChartWithDateFilter = () => {
         <LocalizationProvider dateAdapter={AdapterDateFns} >
           <DatePicker
             label="Chọn ngày"
+            format='yyyy/MM/dd'
             value={selectedDate}
             onChange={(newValue) => setselectedDate(newValue)}
             renderInput={(params) => <TextField fullWidth sx={{ mb: 2 }} {...params} />}

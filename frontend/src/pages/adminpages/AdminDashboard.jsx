@@ -25,6 +25,7 @@ const PRIORITIES = ["Low", "Medium", "High", "All"];
 
 const AdminDashboard = () => {
     const { logout } = useAuth();
+    const token = localStorage.getItem('token');
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('All');
     const [selectedPriority, setSelectedPriority] = useState('All');
@@ -74,7 +75,11 @@ const AdminDashboard = () => {
 
     const fetchCounts = async () => {
         try {
-            const res = await axios.get(API_URL + '/tickets/counts');
+            const res = await axios.get(API_URL + '/tickets/counts', {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
             setCounts(res.data);
         } catch (error) {
             console.error("Error fetching ticket counts:", error);
@@ -90,6 +95,9 @@ const AdminDashboard = () => {
                     priority: priority !== 'All' ? priority : undefined,
                     status: status !== 'All' ? status : undefined,
                     page: pageNumber,
+                },
+                headers: {
+                    Authorization: `Bearer ${token}`
                 }
             });
             setTickets(res.data.results);
@@ -115,8 +123,18 @@ const AdminDashboard = () => {
 
     const handleExportTickets = async (e) => {
         e.preventDefault()
+        const queryParams = {
+            search: searchTerm,
+            category: selectedCategory !== 'All' ? selectedCategory : undefined,
+            priority: selectedPriority !== 'All' ? selectedPriority : undefined,
+            status: selectedStatus !== 'All' ? selectedStatus : undefined
+        }
         try {
             const res = await axios.get(`${API_URL}/export`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
+                params: queryParams,
                 responseType: 'blob'
             })
             const url = window.URL.createObjectURL(new Blob([res.data]))

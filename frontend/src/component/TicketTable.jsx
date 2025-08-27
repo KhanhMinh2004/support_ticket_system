@@ -21,6 +21,8 @@ import { useState } from 'react';
 import {getStatusColor} from "../utils/statusColor.js";
 import {getPriorityColor} from "../utils/priorityColor.js";
 import axios from "axios";
+import { useAuth } from '../hooks/useAuth.jsx';
+
 
 const API_URL = import.meta.env.VITE_API_URL
 const STATUSES = ['Open', 'In Progress', 'Resolved']
@@ -28,7 +30,7 @@ const STATUSES = ['Open', 'In Progress', 'Resolved']
 const TicketTable = ({ tickets, onTicketUpdate}) => {
     const [selectedTicket, setSelectedTicket] = useState(null);
     const [openDialog, setOpenDialog] = useState(false);
-
+    const token = localStorage.getItem('token');
     const handleView = (ticket) => {
         setSelectedTicket(ticket);
         setOpenDialog(true);
@@ -42,7 +44,12 @@ const TicketTable = ({ tickets, onTicketUpdate}) => {
     const handleSave = async () => {
         try {
             await axios.patch(`${API_URL}/tickets/` + selectedTicket.id + '/status', {
-                status: selectedTicket.status,
+                status: selectedTicket.status },
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
             })
             onTicketUpdate({ ...selectedTicket, status: selectedTicket.status });
 
