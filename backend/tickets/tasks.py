@@ -2,11 +2,8 @@ from django.conf import settings
 from django.core.mail import send_mail
 from celery import shared_task
 from io import StringIO
-from .models import Ticket
 import csv
-from django.core.files.base import ContentFile
-from django.core.files.storage import default_storage
-from .filters import filter_tickets
+
 
 
 @shared_task

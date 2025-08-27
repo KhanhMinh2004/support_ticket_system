@@ -1,6 +1,4 @@
 import os
-from celery.result import AsyncResult
-from django.shortcuts import render
 from django.http import HttpResponse
 from django.contrib.auth import authenticate
 from django_filters.rest_framework import DjangoFilterBackend
@@ -9,7 +7,6 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import generics
-from rest_framework.authtoken.models import Token
 from .serializers import UserSerializer, TicketSerializer
 from .models import Ticket
 from rest_framework.views import APIView
@@ -29,6 +26,7 @@ from google.auth.transport import requests
 from google.oauth2 import id_token
 import requests as http_requests
 from django.contrib.auth import get_user_model
+from rest_framework.decorators import permission_classes
 
 User = get_user_model()
 
@@ -46,7 +44,7 @@ class LoginView(APIView):
                     user=user,
                     application=app,
                     token=generate_token(),
-                    expires=timezone.now() + timedelta(minutes=1),
+                    expires=timezone.now() + timedelta(hours=1),
                     scope="read write"
                 )
 
@@ -102,7 +100,7 @@ class GoogleLoginView(APIView):
                 user=user,
                 application=app,
                 token=generate_token(),
-                expires=timezone.now() + timedelta(minutes=1),
+                expires=timezone.now() + timedelta(hours=1),
                 scope="read write"
             )
 
@@ -190,8 +188,8 @@ class TicketStatusUpdateView(generics.UpdateAPIView):
 
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def ticket_counts(request):
-    permission_classes = [IsAuthenticated]
 
     counts = {
         "total": Ticket.objects.count(),
@@ -298,45 +296,4 @@ class MeView(APIView):
         serializer = UserSerializer(request.user)
         return Response(serializer.data)
     
-    # permission_classes = [AllowAny]
-    # def get(self, request):
-    #     auth_header = request.headers.get("Authorization")
-    #     print("Authorization header:", auth_header)
-    #     if not auth_header or not auth_header.startswith("Bearer "):
-    #         return Response({"error": "Authorization header missing"}, status=status.HTTP_401_UNAUTHORIZED)
 
-    #     access_token = auth_header.split(" ")[1]
-
-    #     # Gọi Google API để xác thực access_token
-    #     google_resp = http_requests.get(
-    #         "https://openidconnect.googleapis.com/v1/userinfo",
-    #         headers={"Authorization": f"Bearer {access_token}"}
-    #     )
-
-    #     if google_resp.status_code != 200:
-    #         return Response({"error": "Invalid or expired Google token"}, status=status.HTTP_401_UNAUTHORIZED)
-
-    #     user_info = google_resp.json()
-    #     return Response(user_info, status=status.HTTP_200_OK)
-class RefreshTokenView(APIView):
-    permission_classes = [AllowAny]
-    def post(self, request):
-        refresh_token = request.data.get('refresh_token')
-
-        if not refresh_token:
-            return Response({"error": "Refresh token is required"}, status=status.HTTP_400_BAD_REQUEST)
-
-        payload = {
-            "grant_type": "refresh_token",
-            "refresh_token": refresh_token,
-            "client_id": os.getenv("GOOGLE_CLIENT_ID"),
-            "client_secret": os.getenv("GOOGLE_CLIENT_SECRET")
-        }
-        response = http_requests.post("https://oauth2.googleapis.com/token", data=payload)
-        
-        if response.status_code == 200:
-             data = response.json()
-             if "refresh_token" not in data:
-                data["refresh_token"] = refresh_token
-
-        return Response(data, status=status.HTTP_200_OK)

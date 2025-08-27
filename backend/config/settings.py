@@ -100,6 +100,7 @@ REST_AUTH = {
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+        'rest_framework.authentication.SessionAuthentication'
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
@@ -233,8 +234,6 @@ SOCIALACCOUNT_PROVIDERS = {
 
 SOCIALACCOUNT_LOGIN_ON_GET = True
 SITE_ID = 2
-LOGIN_REDIRECT_URL = "http://localhost:5173/google/callback"   # React FE
-LOGOUT_REDIRECT_URL = "http://localhost:5173/"
 SOCIALACCOUNT_AUTO_SIGNUP = True
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_REQUIRED = True

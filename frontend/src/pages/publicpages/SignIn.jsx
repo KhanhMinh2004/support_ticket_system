@@ -126,7 +126,6 @@ export default function SignIn() {
                         onError={(error) => console.error("Google Login error:", error)}
                         render={({ onClick }) => (
                             <StyledButton
-                                variant="outlined"
                                 fullWidth
                                 startIcon={<GoogleIcon />}
                                 onClick={onClick}
